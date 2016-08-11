@@ -1,0 +1,8 @@
+/bin/
+/sudoku/
+.idea/
+.settings
+.project
+.classpath
+Sudoku.iml
+out/
