@@ -22,12 +22,12 @@ import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 
-import sudoku.solver.BruteForceSolver;
-import sudoku.solver.SmartSolver;
-import sudoku.solver.SudokuSolver;
+//import sudoku.solver.BruteForceSolver;
+//import sudoku.solver.SmartSolver;
+//import sudoku.solver.SudokuSolver;
 
 public class Sudoku {
-	
+
 	public enum FeedbackMode {
 		Console, Window, Silent
 	}
@@ -42,7 +42,7 @@ public class Sudoku {
 	private FeedbackMode feedback;
 	private SolverType solverType;
 	private String name = "Sudoku";
-	private SudokuSolver solver;
+//	private SudokuSolver solver;
 	private SudokuWindow window;
 	
 	public Sudoku(String name, SolverType solverType, FeedbackMode feedback, int[][] grid, int[][] solution) {
@@ -66,26 +66,26 @@ public class Sudoku {
 		if (feedback == FeedbackMode.Window) {
 			window = new SudokuWindow(this);
 		}
-		setSolverType(solverType);
+//		setSolverType(solverType);
 	}
 	
-	public boolean solve(boolean wait) {
-		Thread thread = new Thread(solver);
-		thread.start();
-		if (wait) {
-			try {
-				thread.join();
-			} catch (InterruptedException e) {
-				solver.stopSolving();
-				resetGrid();
-			}
-			return solver.getSolved();
-		}
-		return true;
-	}
+//	public boolean solve(boolean wait) {
+//		Thread thread = new Thread(solver);
+//		thread.start();
+//		if (wait) {
+//			try {
+//				thread.join();
+//			} catch (InterruptedException e) {
+//				solver.stopSolving();
+//				resetGrid();
+//			}
+//			return solver.getSolved();
+//		}
+//		return true;
+//	}
 	
 	public boolean checkGridValidity() {
-		boolean gridValid = solver.checkGridValidity();
+		boolean gridValid = true;//solver.checkGridValidity();
 		if (gridValid && feedback == FeedbackMode.Console)
 			System.out.println("Sudoku " + name + " is valid.");
 		else if (!gridValid && feedback == FeedbackMode.Console) {
@@ -136,9 +136,9 @@ public class Sudoku {
 		return originalGrid[col][row];
 	}
 	
-	public float getSolveTime() {
-		return solver.getSolveTime();
-	}
+//	public float getSolveTime() {
+//		return solver.getSolveTime();
+//	}
 	
 	public int[][] getGrid() {
 		return grid;
@@ -182,28 +182,28 @@ public class Sudoku {
 		return solverType;
 	}
 	
-	public void setSolverType(SolverType solverType) {
-		this.solverType = solverType;
-		if (this.feedback == FeedbackMode.Window) {
-			switch (solverType) {
-			case BruteForce:
-				solver = new BruteForceSolver(this, window);
-				break;
-			case Smart:
-				solver = new SmartSolver(this, window);
-				break;
-			}
-		} else {
-			switch (solverType) {
-			case BruteForce:
-				solver = new BruteForceSolver(this);
-				break;
-			case Smart:
-				solver = new SmartSolver(this);
-				break;
-			}
-		}
-	}
+//	public void setSolverType(SolverType solverType) {
+//		this.solverType = solverType;
+//		if (this.feedback == FeedbackMode.Window) {
+//			switch (solverType) {
+//			case BruteForce:
+//				solver = new BruteForceSolver(this, window);
+//				break;
+//			case Smart:
+//				solver = new SmartSolver(this, window);
+//				break;
+//			}
+//		} else {
+//			switch (solverType) {
+//			case BruteForce:
+//				solver = new BruteForceSolver(this);
+//				break;
+//			case Smart:
+//				solver = new SmartSolver(this);
+//				break;
+//			}
+//		}
+//	}
 	
 	public void openWindow() {
 		window.open();
@@ -229,12 +229,12 @@ public class Sudoku {
 			}
 			for (int i = 0; i < 9; i++) {
 				for (int j = 0; j < 9; j++) {
-					writer.write(new Integer(originalGrid[j][i]).toString());
+					writer.write(Integer.toString(originalGrid[j][i]));
 				}
 				if (printSolution) {
 					writer.write("   ");
 					for (int j = 0; j < 9; j++) {
-						writer.write(new Integer(grid[j][i]).toString());
+						writer.write(Integer.toString(grid[j][i]));
 					}
 				}
 				writer.newLine();
@@ -307,7 +307,7 @@ public class Sudoku {
 			Font font = FontFactory.getFont(FontFactory.HELVETICA, 30, Font.BOLD);
 			for (int i = 0; i < 9; i++) {
 				for (int j = 0; j < 9; j++) {
-					String number = new Integer(grid[j][i]).toString();
+					String number = Integer.toString(grid[j][i]);
 					if (grid[j][i] == 0)
 						number = "";
 					PdfPCell cell = new PdfPCell(new Phrase(number, font));
@@ -349,10 +349,7 @@ public class Sudoku {
 			document.add(table);
 		    document.close();
 		    System.out.println("Sudoku exported to PDF: " + name);
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (DocumentException e) {
+		} catch (FileNotFoundException | DocumentException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

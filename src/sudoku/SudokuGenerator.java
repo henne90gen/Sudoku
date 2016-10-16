@@ -62,11 +62,11 @@ public class SudokuGenerator implements ActionListener {
 		thread = new Thread(new Runnable(){
 			@Override
 			public void run() {
-				sudoku = new Sudoku("Random", 
-									SolverType.BruteForce, 
-									FeedbackMode.Window,
-									//Main.hard);
-									new SudokuGenerator().getSudoku(new Integer(numbers.getText()), SolverType.BruteForce));
+//				sudoku = new Sudoku("Random",
+//									SolverType.BruteForce,
+//									FeedbackMode.Window,
+//									Main.hard);
+//									new SudokuGenerator().getSudoku(new Integer(numbers.getText()), SolverType.BruteForce));
 				frame.remove(mainPanel);
 				mainPanel = new JPanel();
 				sudoku.addToPanel(mainPanel);
@@ -155,12 +155,12 @@ public class SudokuGenerator implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		switch (e.getActionCommand()) {
 		case SOLVE_COMMAND:
-			sudoku.setSolverType((SolverType)solverType.getSelectedItem());
+//			sudoku.setSolverType((SolverType)solverType.getSelectedItem());
 			thread = new Thread(new Runnable() {
 				@Override
 				public void run() {
 					sudoku.resetGrid();
-					boolean solved = sudoku.solve(true);
+					boolean solved = true;//sudoku.solve(true);
 					numbers.setEnabled(true);
 					solveBtn.setEnabled(true);
 					generateBtn.setEnabled(true);
@@ -185,26 +185,26 @@ public class SudokuGenerator implements ActionListener {
 		}
 	}
 	
-	public int[][] getSudoku(int amountOfNumbers, SolverType solverType) {
-		generating = true;
-		int[][] grid = new int[9][9];
-		if (amountOfNumbers <= 0)
-			amountOfNumbers = rand.nextInt(6) + 25;
-		grid[0][0] = 1;
-		grid[0][1] = 1;
-		Sudoku sudoku = new Sudoku("", solverType, FeedbackMode.Silent, grid);
-		while (!sudoku.solve(true) && generating) {
-			grid = new int[9][9];
-			for (int i = 0; i < amountOfNumbers; i++) {
-				placeNumber(grid);
-			}
-			sudoku.setGrid(grid);
-			sudoku.setOriginalGrid(grid);
-		}
-		if (!generating)
-			grid = new int[9][9];
-		return grid;
-	}
+//	public int[][] getSudoku(int amountOfNumbers, SolverType solverType) {
+//		generating = true;
+//		int[][] grid = new int[9][9];
+//		if (amountOfNumbers <= 0)
+//			amountOfNumbers = rand.nextInt(6) + 25;
+//		grid[0][0] = 1;
+//		grid[0][1] = 1;
+//		Sudoku sudoku = new Sudoku("", solverType, FeedbackMode.Silent, grid);
+//		while (!sudoku.solve(true) && generating) {
+//			grid = new int[9][9];
+//			for (int i = 0; i < amountOfNumbers; i++) {
+//				placeNumber(grid);
+//			}
+//			sudoku.setGrid(grid);
+//			sudoku.setOriginalGrid(grid);
+//		}
+//		if (!generating)
+//			grid = new int[9][9];
+//		return grid;
+//	}
 	
 	private void placeNumber(int[][] grid) {
 		int col = rand.nextInt(9);
@@ -233,15 +233,15 @@ public class SudokuGenerator implements ActionListener {
 		ArrayList<Float> times = new ArrayList<Float>();
 		ArrayList<int[][]> unsolvable = new ArrayList<int[][]>();
 		for (int i = 1; i < amount + 1; i++) {
-			Sudoku sudoku = new Sudoku("#" + i, SolverType.BruteForce, FeedbackMode.Console, getSudoku(difficulty, (solvable)?SolverType.Smart:SolverType.BruteForce));
-			if (sudoku.solve(true)) {
-				solved++;
-				times.add(sudoku.getSolveTime());
-				sudoku.saveToFile("solvable.txt", true);
-			} else {
-				unsolvable.add(sudoku.getOriginalGrid());
-				sudoku.saveToFile("unsolvable.txt", false);
-			}
+//			Sudoku sudoku = new Sudoku("#" + i, SolverType.BruteForce, FeedbackMode.Console, getSudoku(difficulty, (solvable)?SolverType.Smart:SolverType.BruteForce));
+//			if (sudoku.solve(true)) {
+//				solved++;
+//				times.add(sudoku.getSolveTime());
+//				sudoku.saveToFile("solvable.txt", true);
+//			} else {
+//				unsolvable.add(sudoku.getOriginalGrid());
+//				sudoku.saveToFile("unsolvable.txt", false);
+//			}
 		}
 		
 		System.out.println("Solved " + solved + " out of " + amount + " in " + (System.nanoTime() - time) / 1000000000.0f + " seconds.");

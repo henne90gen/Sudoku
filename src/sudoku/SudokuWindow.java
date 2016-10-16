@@ -60,7 +60,7 @@ public class SudokuWindow {
 		solveBtn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				sudoku.solve(false);
+//				sudoku.solve(false);
 			}
 		});
 		mainPanel.add(solveBtn);
