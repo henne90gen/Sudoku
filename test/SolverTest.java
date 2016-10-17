@@ -65,7 +65,36 @@ public class SolverTest {
                 assertEquals(true, checkRow(1));
             }
         };
-//        solver.addVisualizer(new ConsoleVisualizer(sudoku));
+        solver.solve();
+    }
+
+    @Test
+    public void testCheckColumn() throws IllegalGridException {
+        int[] tmpGrid = Arrays.copyOf(easy, easy.length);
+        tmpGrid[0] = 2;
+        Sudoku sudoku = new Sudoku("Test", tmpGrid);
+        Solver solver = new Solver(sudoku, Solver.SolverType.Custom) {
+            @Override
+            protected void startSolving() {
+                assertEquals(false, checkColumn(0));
+                assertEquals(true, checkColumn(1));
+            }
+        };
+        solver.solve();
+    }
+
+    @Test
+    public void testCheckBlock() throws IllegalGridException {
+        int[] tmpGrid = Arrays.copyOf(easy, easy.length);
+        tmpGrid[0] = 8;
+        Sudoku sudoku = new Sudoku("Test", tmpGrid);
+        Solver solver = new Solver(sudoku, Solver.SolverType.Custom) {
+            @Override
+            protected void startSolving() {
+                assertEquals(false, checkBlock(0, 0));
+                assertEquals(true, checkBlock(3, 0));
+            }
+        };
         solver.solve();
     }
 

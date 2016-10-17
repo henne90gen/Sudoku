@@ -30,7 +30,7 @@ public abstract class Solver {
         long endTime = System.nanoTime();
         float solveTime = (endTime - startTime) / 1000000000.0f;
         updateSudoku();
-        postMessage(6, "Solved sudoku " + sudoku.getName() + " in " + solveTime + "s with " + solverType.toString());
+        postMessage(6, "\nSolved sudoku " + sudoku.getName() + " in " + solveTime + "s with " + solverType.toString() + "Solver\n");
     }
 
     protected abstract void startSolving();
