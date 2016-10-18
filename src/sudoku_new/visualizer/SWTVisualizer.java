@@ -24,6 +24,7 @@ public class SWTVisualizer extends Visualizer {
         super(sudoku);
     }
 
+    @Override
     public void open() {
         new Thread(() -> {
             Display display = new Display();

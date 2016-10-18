@@ -12,6 +12,11 @@ public class ConsoleVisualizer extends Visualizer {
     }
 
     @Override
+    public void open() {
+
+    }
+
+    @Override
     public void postMessage(int importance, String message) {
         if (importance > 5) {
             System.out.println(message);

@@ -20,6 +20,8 @@ public abstract class Visualizer {
         solvers = new ArrayList<>();
     }
 
+    public abstract void open();
+
     public abstract void postMessage(int importance, String message);
 
     public abstract void updateSudoku();

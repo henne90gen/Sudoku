@@ -12,6 +12,11 @@ public class SwingVisualizer extends Visualizer {
     }
 
     @Override
+    public void open() {
+
+    }
+
+    @Override
     public void postMessage(int importance, String message) {
 
     }
