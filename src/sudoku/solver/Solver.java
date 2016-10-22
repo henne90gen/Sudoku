@@ -31,10 +31,14 @@ public abstract class Solver {
         long endTime = System.nanoTime();
         float solveTime = (endTime - startTime) / 1000000000.0f;
 
-        postMessage("Solved sudoku '" + sudoku.getName() + "' in " + solveTime + "s");
+        postFinishMessage("Solved sudoku '" + sudoku.getName() + "' in " + solveTime + "s");
     }
 
     protected abstract void startSolving();
+
+    protected void postFinishMessage(String message) {
+        pushSudokuEvent(SudokuEventFactory.INSTANCE.getFinishEvent(sudoku, message));
+    }
 
     protected void postMessage(String message) {
         pushSudokuEvent(SudokuEventFactory.INSTANCE.getPostMessageEvent(sudoku, message));
@@ -49,7 +53,7 @@ public abstract class Solver {
     }
 
     public void reset() {
-        sudoku.reset(solverType);
+        sudoku.resetSolver(solverType);
     }
 
     public SolverType getSolverType() {

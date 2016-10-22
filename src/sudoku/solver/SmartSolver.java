@@ -82,6 +82,7 @@ public class SmartSolver extends Solver {
         scanPossibilities(0, 0);
         if (possibilityGrid[row * 9 + col] != null && possibilityGrid[row * 9 + col].size() > index) {
             sudoku.setNumber(solverType, row, col, possibilityGrid[row * 9 + col].get(index));
+            logSetNumber(row, col, possibilityGrid[row * 9 + col].get(index));
             scanPossibilities(0, 0);
         } else {
             sudoku.setNumber(solverType, row, col, 0);
@@ -104,6 +105,7 @@ public class SmartSolver extends Solver {
                         checkNumberInRow(row, col, possibilityGrid[row * 9 + col].get(j)) ||
                         checkNumberInBlock(row, col, possibilityGrid[row * 9 + col].get(j))) {
                     sudoku.setNumber(solverType, row, col, possibilityGrid[row * 9 + col].get(j));
+                    logSetNumber(row, col, possibilityGrid[row * 9 + col].get(j));
                     return true;
                 }
             }
@@ -181,6 +183,7 @@ public class SmartSolver extends Solver {
             }
             if (possibilityGrid[row * 9 + col].size() == 1) {
                 sudoku.setNumber(solverType, row, col, possibilityGrid[row * 9 + col].get(0));
+                logSetNumber(row, col, possibilityGrid[row * 9 + col].get(0));
                 possibilityGrid[row * 9 + col] = null;
                 scanPossibilities(0, 0);
             }

@@ -43,4 +43,16 @@ public class SudokuEvent {
     public SudokuModel getSudoku() {
         return sudoku;
     }
+
+    public int getRow() {
+        return row;
+    }
+
+    public int getCol() {
+        return col;
+    }
+
+    public int getNewNumber() {
+        return newNumber;
+    }
 }

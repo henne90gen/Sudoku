@@ -16,4 +16,8 @@ public class SudokuEventFactory {
     public SudokuEvent getSetNumberEvent(SudokuModel sudoku, int row, int col, int newNumber) {
         return new SudokuEvent(SudokuEventType.SetNumber, sudoku, row, col, newNumber);
     }
+
+    public SudokuEvent getFinishEvent(SudokuModel sudoku, String message) {
+        return new SudokuEvent(SudokuEventType.FinishedSolving, sudoku, message);
+    }
 }

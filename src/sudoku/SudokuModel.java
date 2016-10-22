@@ -73,7 +73,7 @@ public class SudokuModel {
     public boolean solveUsingSolver(SolverType solverType) {
         Solver solver = solvers.get(solverType);
         if (solver != null) {
-            solver.solve();
+            new Thread(solver::solve).start();
             return true;
         }
         return false;
@@ -91,7 +91,7 @@ public class SudokuModel {
         return editableFields[row * 9 + col];
     }
 
-    public void reset(SolverType solverType) {
+    public void resetSolver(SolverType solverType) {
         solutions.put(solverType, getGridCopy());
     }
 }
