@@ -1,14 +1,15 @@
-package sudoku_new.solver;
+package sudoku.solver;
 
-import sudoku_new.Sudoku;
+import sudoku.SudokuController;
+import sudoku.SudokuModel;
 
 /**
  * Created by henne on 16.10.16.
  */
 public class BruteForceSolver extends Solver {
 
-    public BruteForceSolver(Sudoku sudoku) {
-        super(sudoku, SolverType.BruteForce);
+    public BruteForceSolver(SudokuController controller, SudokuModel sudoku) {
+        super(controller, sudoku, SolverType.BruteForceSolver);
     }
 
     @Override
@@ -55,12 +56,12 @@ public class BruteForceSolver extends Solver {
     }
 
     private boolean nextNumber(int row, int col) {
-        if (sudoku.getNumber(row, col) < 9) {
-            int newNumber = sudoku.getNumber(row, col) + 1;
-            postMessage(0, "Placing number " + newNumber + " at position " + row + " " + col);
-            sudoku.setNumber(row, col, newNumber);
+        if (sudoku.getNumber(solverType, row, col) < 9) {
+            int newNumber = sudoku.getNumber(solverType, row, col) + 1;
+            logSetNumber(row, col, newNumber);
+            sudoku.setNumber(solverType, row, col, newNumber);
         } else {
-            sudoku.setNumber(row, col, 0);
+            sudoku.setNumber(solverType, row, col, 0);
             return false;
         }
         return checkRow(row) && checkColumn(col) && checkBlock(row, col) || nextNumber(row, col);

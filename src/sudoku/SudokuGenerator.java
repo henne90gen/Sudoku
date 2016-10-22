@@ -1,3 +1,4 @@
+/*
 package sudoku;
 
 import java.awt.Dimension;
@@ -62,7 +63,7 @@ public class SudokuGenerator implements ActionListener {
 		thread = new Thread(new Runnable(){
 			@Override
 			public void run() {
-//				sudoku = new Sudoku("Random",
+//				sudoku = new SudokuModel("Random",
 //									SolverType.BruteForce,
 //									FeedbackMode.Window,
 //									Main.hard);
@@ -192,7 +193,7 @@ public class SudokuGenerator implements ActionListener {
 //			amountOfNumbers = rand.nextInt(6) + 25;
 //		grid[0][0] = 1;
 //		grid[0][1] = 1;
-//		Sudoku sudoku = new Sudoku("", solverType, FeedbackMode.Silent, grid);
+//		SudokuModel sudoku = new SudokuModel("", solverType, FeedbackMode.Silent, grid);
 //		while (!sudoku.solve(true) && generating) {
 //			grid = new int[9][9];
 //			for (int i = 0; i < amountOfNumbers; i++) {
@@ -233,7 +234,7 @@ public class SudokuGenerator implements ActionListener {
 		ArrayList<Float> times = new ArrayList<Float>();
 		ArrayList<int[][]> unsolvable = new ArrayList<int[][]>();
 		for (int i = 1; i < amount + 1; i++) {
-//			Sudoku sudoku = new Sudoku("#" + i, SolverType.BruteForce, FeedbackMode.Console, getSudoku(difficulty, (solvable)?SolverType.Smart:SolverType.BruteForce));
+//			SudokuModel sudoku = new SudokuModel("#" + i, SolverType.BruteForce, FeedbackMode.Console, getSudoku(difficulty, (solvable)?SolverType.Smart:SolverType.BruteForce));
 //			if (sudoku.solve(true)) {
 //				solved++;
 //				times.add(sudoku.getSolveTime());
@@ -254,3 +255,4 @@ public class SudokuGenerator implements ActionListener {
 		System.out.println("Average time is " + averageTime / 1000000000.0f + " seconds.");
 	}
 }
+*/

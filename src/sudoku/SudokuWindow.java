@@ -1,3 +1,4 @@
+/*
 package sudoku;
 
 import java.awt.Color;
@@ -113,3 +114,4 @@ public class SudokuWindow {
 		}
 	}
 }
+*/

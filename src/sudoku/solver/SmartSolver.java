@@ -1,6 +1,7 @@
-package sudoku_new.solver;
+package sudoku.solver;
 
-import sudoku_new.Sudoku;
+import sudoku.SudokuController;
+import sudoku.SudokuModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,8 +10,8 @@ public class SmartSolver extends Solver {
 
     private List<Integer>[] possibilityGrid;
 
-    public SmartSolver(Sudoku sudoku) {
-        super(sudoku, SolverType.Smart);
+    public SmartSolver(SudokuController controller, SudokuModel sudoku) {
+        super(controller, sudoku, SolverType.SmartSolver);
         resetPossibilityGrid();
     }
 
@@ -34,7 +35,7 @@ public class SmartSolver extends Solver {
 
     private boolean nextPossibleCell(int row, int col) {
         scanPossibilities(0, 0);
-        if (sudoku.getNumber(row, col) == 0) {
+        if (sudoku.getNumber(solverType, row, col) == 0) {
             if (possibilityGrid[row * 9 + col].size() == 0) {
                 scanPossibilities(0, 0);
                 if (possibilityGrid[row * 9 + col].size() == 0) {
@@ -80,17 +81,17 @@ public class SmartSolver extends Solver {
     private boolean nextPossibleNumber(int row, int col, int index) {
         scanPossibilities(0, 0);
         if (possibilityGrid[row * 9 + col] != null && possibilityGrid[row * 9 + col].size() > index) {
-            sudoku.setNumber(row, col, possibilityGrid[row * 9 + col].get(index));
+            sudoku.setNumber(solverType, row, col, possibilityGrid[row * 9 + col].get(index));
             scanPossibilities(0, 0);
         } else {
-            sudoku.setNumber(row, col, 0);
+            sudoku.setNumber(solverType, row, col, 0);
             scanPossibilities(0, 0);
             return false;
         }
         int[][] tmpGrid = new int[9][9];
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
-                tmpGrid[i][j] = sudoku.getNumber(i, j);
+                tmpGrid[i][j] = sudoku.getNumber(solverType, i, j);
             }
         }
         return nextPossibleNumber(row, col, ++index);
@@ -102,7 +103,7 @@ public class SmartSolver extends Solver {
                 if (checkNumberInColumn(row, col, possibilityGrid[row * 9 + col].get(j)) ||
                         checkNumberInRow(row, col, possibilityGrid[row * 9 + col].get(j)) ||
                         checkNumberInBlock(row, col, possibilityGrid[row * 9 + col].get(j))) {
-                    sudoku.setNumber(row, col, possibilityGrid[row * 9 + col].get(j));
+                    sudoku.setNumber(solverType, row, col, possibilityGrid[row * 9 + col].get(j));
                     return true;
                 }
             }
@@ -169,17 +170,17 @@ public class SmartSolver extends Solver {
         if (col == 0 && row == 0) {
             resetPossibilityGrid();
         }
-        if (sudoku.getNumber(row, col) == 0) {
+        if (sudoku.getNumber(solverType, row, col) == 0) {
             possibilityGrid[row * 9 + col] = new ArrayList<>();
             for (int k = 1; k < 10; k++) {
-                sudoku.setNumber(row, col, k);
+                sudoku.setNumber(solverType, row, col, k);
                 if (checkRow(row) && checkColumn(col) && checkBlock(row, col)) {
                     possibilityGrid[row * 9 + col].add(k);
                 }
-                sudoku.setNumber(row, col, 0);
+                sudoku.setNumber(solverType, row, col, 0);
             }
             if (possibilityGrid[row * 9 + col].size() == 1) {
-                sudoku.setNumber(row, col, possibilityGrid[row * 9 + col].get(0));
+                sudoku.setNumber(solverType, row, col, possibilityGrid[row * 9 + col].get(0));
                 possibilityGrid[row * 9 + col] = null;
                 scanPossibilities(0, 0);
             }
