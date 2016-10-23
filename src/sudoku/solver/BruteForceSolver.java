@@ -1,7 +1,7 @@
 package sudoku.solver;
 
 import sudoku.SudokuController;
-import sudoku.SudokuModel;
+import sudoku.model.SudokuModel;
 
 /**
  * Created by henne on 16.10.16.

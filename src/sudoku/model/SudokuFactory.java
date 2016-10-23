@@ -1,4 +1,6 @@
-package sudoku;
+package sudoku.model;
+
+import sudoku.SudokuController;
 
 /**
  * Created by henne on 22.10.16.
@@ -18,6 +20,9 @@ public class SudokuFactory {
             0, 2, 7, 0, 0, 0, 9, 5, 0};
 
     private int sudokuIndex = 0;
+
+    private SudokuFactory() {
+    }
 
     public SudokuModel getSudoku(SudokuController controller) {
         SudokuModel sudoku = new SudokuModel(controller, getSudokuName(), easy);

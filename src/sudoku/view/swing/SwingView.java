@@ -1,7 +1,7 @@
-package sudoku.view;
+package sudoku.view.swing;
 
 import sudoku.SudokuController;
-import sudoku.SudokuModel;
+import sudoku.view.View;
 import sudoku.view.event.SudokuEvent;
 
 import javax.swing.*;

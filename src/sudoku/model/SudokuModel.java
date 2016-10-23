@@ -1,5 +1,6 @@
-package sudoku;
+package sudoku.model;
 
+import sudoku.SudokuController;
 import sudoku.exceptions.IllegalGridException;
 import sudoku.solver.Solver;
 import sudoku.solver.SolverFactory;

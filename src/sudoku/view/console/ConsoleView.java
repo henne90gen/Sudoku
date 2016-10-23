@@ -1,8 +1,9 @@
-package sudoku.view;
+package sudoku.view.console;
 
 import sudoku.SudokuController;
-import sudoku.SudokuModel;
+import sudoku.model.SudokuModel;
 import sudoku.solver.SolverType;
+import sudoku.view.View;
 import sudoku.view.event.SudokuEvent;
 
 import java.io.BufferedReader;
@@ -132,7 +133,8 @@ public class ConsoleView extends View {
     private String getSudokuName(int sudokuNumber) {
         Set<String> sudokuNames = controller.getSudokuNames();
         final AtomicInteger indexHolder = new AtomicInteger();
-        String sudokuName = sudokuNames.stream().filter(name -> indexHolder.getAndIncrement() == sudokuNumber).findFirst().orElse(null);
+        String sudokuName = sudokuNames.stream().filter(name -> indexHolder.getAndIncrement() == sudokuNumber)
+                .findFirst().orElse(null);
         return sudokuName;
     }
 

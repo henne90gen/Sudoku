@@ -1,4 +1,4 @@
-package sudoku.view;
+package sudoku.view.swt;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
@@ -9,8 +9,9 @@ import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.*;
 import sudoku.SudokuController;
-import sudoku.SudokuModel;
+import sudoku.model.SudokuModel;
 import sudoku.solver.SolverType;
+import sudoku.view.View;
 import sudoku.view.event.SudokuEvent;
 
 import java.util.LinkedHashMap;
@@ -21,14 +22,6 @@ import java.util.Set;
  * Created by henne on 16.10.16.
  */
 public class SWTView extends View {
-
-    private static final int SHELL_OPTIONS = SWT.SHELL_TRIM;
-
-    private static final int DEFAULT_MARGIN = 10;
-
-    private static final String SOLVE_BUTTON_TEXT = "Solve Sudoku";
-    private static final String RESET_BUTTON_TEXT = "Reset Sudoku";
-    private static final String SHELL_TITLE = "Sudoku SWTView";
 
     private Display display;
 
@@ -61,9 +54,9 @@ public class SWTView extends View {
 
         display = new Display();
         display.syncExec(() -> {
-            shell = new Shell(display, SHELL_OPTIONS);
+            shell = new Shell(display, SWTConstants.SHELL_OPTIONS);
             shell.setLayout(new FormLayout());
-            shell.setText(SHELL_TITLE);
+            shell.setText(SWTConstants.SHELL_TITLE);
 
             tabFolder = new TabFolder(shell, SWT.BORDER);
             tabFolder.setLayout(new FormLayout());
@@ -101,22 +94,40 @@ public class SWTView extends View {
             for (String sudokuName : sudokuNames) {
                 SudokuModel sudokuModel = controller.getSudoku(sudokuName);
 
-                Composite tabComposite = getTabComposite();
+                Composite tabComposite = SWTHelper.INSTANCE.getTabComposite(tabFolder);
 
                 TabItem tabItem = new TabItem(tabFolder, SWT.NULL);
                 tabItem.setText(sudokuName);
                 tabItem.setControl(tabComposite);
 
-                Label messageLabel = getMessageLabel(sudokuName, tabComposite);
+                Label messageLabel = SWTHelper.INSTANCE.getMessageLabel(display, tabComposite);
                 messageLabels.put(sudokuName, messageLabel);
 
-                solverSelector = getSolverSelector(sudokuName, tabComposite, messageLabel);
+                Listener solverSelectorListener = event -> {
+                    SolverType solverType = getSelectedSolver();
+
+                    boolean custom = false;
+                    if (solverType == SolverType.CustomSolver) {
+                        custom = true;
+                    }
+                    setGridEnabled(sudokuName, custom);
+                    controller.getSudoku(sudokuName).resetSolver(solverType);
+                    resetGrid(sudokuName, solverType);
+                    messageLabel.setText("");
+                };
+                solverSelector = SWTHelper.INSTANCE.getSolverSelector(tabComposite, messageLabel,
+                        solverSelectorListener);
 
                 // create grid of text components
                 Text[] grid = new Text[81];
                 for (int row = 0; row < 9; row++) {
                     for (int col = 0; col < 9; col++) {
-                        Text cell = getCell(sudokuModel, tabComposite, grid, row, col);
+                        Text cell = SWTHelper.INSTANCE.getCell(sudokuModel, getSelectedSolver(), display,
+                                tabComposite, grid, row, col);
+                        if (row == 0) {
+                            FormData cellData = (FormData) cell.getLayoutData();
+                            cellData.top = new FormAttachment(solverSelector, SWTConstants.DEFAULT_MARGIN);
+                        }
                         grid[row * 9 + col] = cell;
                     }
                 }
@@ -126,62 +137,13 @@ public class SWTView extends View {
                 ((FormData) messageLabel.getLayoutData()).right = new FormAttachment(grid[8], 0, SWT.RIGHT);
 
                 // TODO maybe place buttons next to each other
-                createSolveButton(sudokuName, tabComposite, grid);
+                solveBtn = SWTHelper.INSTANCE.createSolveButton(sudokuName, tabComposite, grid);
 
-                createResetButton(sudokuName, tabComposite);
+                resetBtn = SWTHelper.INSTANCE.createResetButton(sudokuName, tabComposite, solveBtn);
 
                 addListeners(solveBtn, resetBtn);
             }
         });
-    }
-
-    private void createSolveButton(String sudokuName, Composite tabComposite, Text[] grid) {
-        solveBtn = new Button(tabComposite, SWT.PUSH);
-        solveBtn.setText(SOLVE_BUTTON_TEXT);
-        solveBtn.setData(sudokuName);
-        FormData solveData = new FormData();
-        solveData.left = new FormAttachment();
-        solveData.right = new FormAttachment(grid[80], 0, SWT.RIGHT);
-        solveData.top = new FormAttachment(grid[80], DEFAULT_MARGIN);
-        solveBtn.setLayoutData(solveData);
-    }
-
-    private void createResetButton(String sudokuName, Composite tabComposite) {
-        resetBtn = new Button(tabComposite, SWT.PUSH);
-        resetBtn.setText(RESET_BUTTON_TEXT);
-        resetBtn.setData(sudokuName);
-        resetBtn.setEnabled(false);
-        FormData resetData = new FormData();
-        resetData.left = new FormAttachment();
-        resetData.top = new FormAttachment(solveBtn, DEFAULT_MARGIN);
-        resetData.right = new FormAttachment(solveBtn, 0, SWT.RIGHT);
-        resetBtn.setLayoutData(resetData);
-    }
-
-    private Combo getSolverSelector(String sudokuName, Composite tabComposite, Label messageLabel) {
-        Combo solverSelector = new Combo(tabComposite, SWT.DROP_DOWN | SWT.BORDER);
-        solverSelector.addListener(SWT.Selection, event -> {
-            SolverType solverType = getSelectedSolver();
-
-            boolean custom = false;
-            if (solverType == SolverType.CustomSolver) {
-                custom = true;
-            }
-            setGridEnabled(sudokuName, custom);
-            controller.getSudoku(sudokuName).resetSolver(solverType);
-            resetGrid(sudokuName, solverType);
-            messageLabel.setText("");
-        });
-        for (SolverType type : SolverType.values()) {
-            solverSelector.add(type.toString());
-        }
-        solverSelector.select(0);
-
-        FormData solverData = new FormData();
-        solverData.top = new FormAttachment(messageLabel, DEFAULT_MARGIN);
-        solverData.left = new FormAttachment();
-        solverSelector.setLayoutData(solverData);
-        return solverSelector;
     }
 
     private void setGridEnabled(String sudokuName, boolean enabled) {
@@ -196,56 +158,6 @@ public class SWTView extends View {
             solveBtn.setEnabled(!enabled);
             resetBtn.setEnabled(enabled);
         });
-    }
-
-    private Label getMessageLabel(String sudokuName, Composite tabComposite) {
-        Label messageLabel = new Label(tabComposite, SWT.LEFT | SWT.WRAP);
-        messageLabel.setText(sudokuName);
-        messageLabel.setForeground(new Color(display, 0, 0, 0));
-        FormData messageData = new FormData();
-        messageData.top = new FormAttachment();
-        messageData.left = new FormAttachment();
-        messageLabel.setLayoutData(messageData);
-        return messageLabel;
-    }
-
-    private Composite getTabComposite() {
-        Composite tabComposite = new Composite(tabFolder, SWT.BORDER);
-        tabComposite.setLayout(new FormLayout());
-        FormData compositeData = new FormData();
-        compositeData.top = new FormAttachment(0, DEFAULT_MARGIN);
-        compositeData.left = new FormAttachment(0, DEFAULT_MARGIN);
-        compositeData.right = new FormAttachment(100, DEFAULT_MARGIN);
-        compositeData.bottom = new FormAttachment(100, DEFAULT_MARGIN);
-        tabComposite.setLayoutData(compositeData);
-        return tabComposite;
-    }
-
-    private Text getCell(SudokuModel sudokuModel, Composite tabComposite, Text[] grid, int row, int col) {
-        Text cell = new Text(tabComposite, SWT.CENTER);
-        cell.setData(sudokuModel.isFieldEditable(row, col));
-        cell.setEnabled(false);
-        cell.setBackground(new Color(display, 0, 0, 0));
-        int number = sudokuModel.getNumber((SolverType) solverSelector.getData(), row, col);
-        if (number > 0) {
-            cell.setText("" + number);
-        }
-
-        FormData numberData = new FormData();
-        if (row == 0) {
-            numberData.top = new FormAttachment(solverSelector, DEFAULT_MARGIN);
-        } else {
-            numberData.top = new FormAttachment(grid[(row - 1) * 9 + col]);
-        }
-        if (col == 0) {
-            numberData.left = new FormAttachment();
-        } else {
-            numberData.left = new FormAttachment(grid[row * 9 + (col - 1)]);
-        }
-        numberData.width = 25;
-        numberData.height = 25;
-        cell.setLayoutData(numberData);
-        return cell;
     }
 
     private SolverType getSelectedSolver() {

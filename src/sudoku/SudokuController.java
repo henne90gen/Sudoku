@@ -1,9 +1,10 @@
 package sudoku;
 
-import sudoku.view.ConsoleView;
-import sudoku.view.SWTView;
+import sudoku.model.SudokuFactory;
+import sudoku.model.SudokuModel;
 import sudoku.view.View;
 import sudoku.view.event.SudokuEvent;
+import sudoku.view.swt.SWTView;
 
 import java.util.*;
 

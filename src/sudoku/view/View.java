@@ -1,7 +1,6 @@
 package sudoku.view;
 
 import sudoku.SudokuController;
-import sudoku.SudokuModel;
 import sudoku.view.event.SudokuEvent;
 
 /**

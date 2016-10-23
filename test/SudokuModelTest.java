@@ -1,5 +1,4 @@
 import org.junit.Test;
-import sudoku.SudokuModel;
 import sudoku.exceptions.IllegalGridException;
 
 import static org.junit.Assert.assertEquals;

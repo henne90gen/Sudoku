@@ -1,7 +1,7 @@
 package sudoku.solver;
 
 import sudoku.SudokuController;
-import sudoku.SudokuModel;
+import sudoku.model.SudokuModel;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -16,6 +16,9 @@ public class SolverFactory {
     private BruteForceSolver bruteForceSolver;
 
     private SmartSolver smartSolver;
+
+    private SolverFactory() {
+    }
 
     public Map<SolverType, Solver> getAllSolvers(SudokuController controller, SudokuModel sudoku) {
         Map<SolverType, Solver> solvers = new LinkedHashMap<>();

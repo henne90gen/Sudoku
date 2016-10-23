@@ -1,7 +1,7 @@
 package sudoku.solver;
 
 import sudoku.SudokuController;
-import sudoku.SudokuModel;
+import sudoku.model.SudokuModel;
 import sudoku.view.event.SudokuEvent;
 import sudoku.view.event.SudokuEventFactory;
 
@@ -10,11 +10,9 @@ import sudoku.view.event.SudokuEventFactory;
  */
 public abstract class Solver {
 
-    private SudokuController controller;
-
     protected final SudokuModel sudoku;
-
     protected SolverType solverType;
+    private SudokuController controller;
 
     public Solver(SudokuController controller, SudokuModel sudoku, SolverType solverType) {
         this.controller = controller;
@@ -97,7 +95,8 @@ public abstract class Solver {
                     for (int k = 0; k < 3; k++) {
                         for (int l = 0; l < 3; l++) {
                             if (sudoku.getNumber(solverType, l + row, k + col) != 0)
-                                if ((sudoku.getNumber(solverType, j + row, i + col) == sudoku.getNumber(solverType, l + row, k + col)) &&
+                                if ((sudoku.getNumber(solverType, j + row, i + col) == sudoku.getNumber(solverType, l
+                                        + row, k + col)) &&
                                         (((i != k) ^ (j != l)) || ((i != k) && (j != l)))) {
                                     return false;
                                 }

@@ -1,7 +1,7 @@
 package sudoku.solver;
 
 import sudoku.SudokuController;
-import sudoku.SudokuModel;
+import sudoku.model.SudokuModel;
 
 import java.util.ArrayList;
 import java.util.List;

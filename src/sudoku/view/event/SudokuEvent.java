@@ -1,6 +1,6 @@
 package sudoku.view.event;
 
-import sudoku.SudokuModel;
+import sudoku.model.SudokuModel;
 
 /**
  * Created by henne on 22.10.16.
