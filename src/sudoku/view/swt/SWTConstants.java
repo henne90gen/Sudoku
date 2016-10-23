@@ -5,7 +5,7 @@ import org.eclipse.swt.SWT;
 /**
  * Created by henne on 23.10.16.
  */
-public class SWTConstants {
+class SWTConstants {
 
 
     public static final int SHELL_OPTIONS = SWT.SHELL_TRIM;

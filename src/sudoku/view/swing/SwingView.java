@@ -9,12 +9,13 @@ import javax.swing.*;
 /**
  * Created by henne on 16.10.16.
  */
+@SuppressWarnings("FieldCanBeLocal")
 public class SwingView extends View {
 
     private static final String FRAME_TITLE = "Sudoku SwingView";
-    private JFrame frame;
-    private JLabel messageLabel;
-    private JLabel[] grid;
+    private final JFrame frame;
+    private final JLabel messageLabel;
+    private final JLabel[] grid;
 
     protected SwingView(SudokuController controller) {
         super(controller);

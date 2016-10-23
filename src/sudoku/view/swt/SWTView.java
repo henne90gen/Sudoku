@@ -23,7 +23,7 @@ import java.util.Set;
  */
 public class SWTView extends View {
 
-    private Display display;
+    private final Display display;
 
     private Shell shell;
 
@@ -31,9 +31,9 @@ public class SWTView extends View {
 
     private Combo solverSelector;
 
-    private Map<String, Label> messageLabels;
+    private final Map<String, Label> messageLabels;
 
-    private Map<String, Text[]> grids;
+    private final Map<String, Text[]> grids;
 
     private Button solveBtn;
 
@@ -143,6 +143,8 @@ public class SWTView extends View {
 
                 addListeners(solveBtn, resetBtn);
             }
+
+            SWTHelper.INSTANCE.createAddSudokuTab();
         });
     }
 
@@ -152,7 +154,7 @@ public class SWTView extends View {
                 if ((boolean) cell.getData() || !enabled) {
                     cell.setEnabled(enabled);
                 } else {
-                    cell.setEnabled(!enabled);
+                    cell.setEnabled(false);
                 }
             }
             solveBtn.setEnabled(!enabled);

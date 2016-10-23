@@ -133,9 +133,8 @@ public class ConsoleView extends View {
     private String getSudokuName(int sudokuNumber) {
         Set<String> sudokuNames = controller.getSudokuNames();
         final AtomicInteger indexHolder = new AtomicInteger();
-        String sudokuName = sudokuNames.stream().filter(name -> indexHolder.getAndIncrement() == sudokuNumber)
+        return sudokuNames.stream().filter(name -> indexHolder.getAndIncrement() == sudokuNumber)
                 .findFirst().orElse(null);
-        return sudokuName;
     }
 
     private void listAllSudokus() {

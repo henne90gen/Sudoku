@@ -7,9 +7,9 @@ import sudoku.SudokuController;
  */
 public class SudokuFactory {
 
-    public static SudokuFactory INSTANCE = new SudokuFactory();
+    public static final SudokuFactory INSTANCE = new SudokuFactory();
 
-    private static int[] easy = {0, 4, 3, 0, 0, 0, 6, 7, 0,
+    private static final int[] easy = {0, 4, 3, 0, 0, 0, 6, 7, 0,
             0, 0, 0, 2, 9, 3, 0, 0, 4,
             2, 8, 0, 0, 0, 0, 3, 1, 0,
             0, 0, 0, 6, 0, 0, 0, 0, 0,
@@ -25,8 +25,7 @@ public class SudokuFactory {
     }
 
     public SudokuModel getSudoku(SudokuController controller) {
-        SudokuModel sudoku = new SudokuModel(controller, getSudokuName(), easy);
-        return sudoku;
+        return new SudokuModel(controller, getSudokuName(), easy);
     }
 
     private String getSudokuName() {

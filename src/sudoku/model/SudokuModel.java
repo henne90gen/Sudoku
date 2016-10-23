@@ -15,7 +15,7 @@ import java.util.Map;
  */
 public class SudokuModel {
 
-    private String name;
+    private final String name;
     private Integer[] grid;
     private Map<SolverType, Solver> solvers;
     private Map<SolverType, Integer[]> solutions;
@@ -59,16 +59,14 @@ public class SudokuModel {
         return grid[row * 9 + col];
     }
 
-    public boolean setNumber(SolverType solverType, int row, int col, int num) {
+    public void setNumber(SolverType solverType, int row, int col, int num) {
         Integer[] solution = solutions.get(solverType);
 
-        if (solution == null) return false;
+        if (solution == null) return;
 
         if (editableFields[row * 9 + col]) {
             solution[row * 9 + col] = num;
-            return true;
         }
-        return false;
     }
 
     public boolean solveUsingSolver(SolverType solverType) {

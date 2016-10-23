@@ -7,11 +7,11 @@ import sudoku.model.SudokuModel;
  */
 public class SudokuEvent {
 
-    private SudokuEventType eventType;
+    private final SudokuEventType eventType;
 
-    private SudokuModel sudoku;
+    private final SudokuModel sudoku;
 
-    private String message;
+    private final String message;
 
     private int row;
 
@@ -25,8 +25,8 @@ public class SudokuEvent {
         this.message = message;
     }
 
-    public SudokuEvent(SudokuEventType eventType, SudokuModel sudoku, int row, int col, int newNumber) {
-        this(eventType, sudoku, "Placing number " + newNumber + " at position " + row + " " + col);
+    public SudokuEvent(SudokuModel sudoku, int row, int col, int newNumber) {
+        this(SudokuEventType.SetNumber, sudoku, "Placing number " + newNumber + " at position " + row + " " + col);
         this.row = row;
         this.col = col;
         this.newNumber = newNumber;

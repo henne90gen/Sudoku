@@ -14,7 +14,7 @@ import sudoku.solver.SolverType;
  */
 public class SWTHelper {
 
-    public static SWTHelper INSTANCE = new SWTHelper();
+    public static final SWTHelper INSTANCE = new SWTHelper();
 
     private SWTHelper() {
     }
@@ -68,7 +68,7 @@ public class SWTHelper {
         }
 
         FormData numberData = new FormData();
-        numberData.top = new FormAttachment(grid[(row - 1) * 9 + col]);
+        if (row > 0) numberData.top = new FormAttachment(grid[(row - 1) * 9 + col]);
         if (col == 0) {
             numberData.left = new FormAttachment();
         } else {
@@ -103,5 +103,8 @@ public class SWTHelper {
         resetData.right = new FormAttachment(solveBtn, 0, SWT.RIGHT);
         resetBtn.setLayoutData(resetData);
         return resetBtn;
+    }
+
+    public void createAddSudokuTab() {
     }
 }

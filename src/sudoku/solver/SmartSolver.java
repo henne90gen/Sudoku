@@ -16,6 +16,7 @@ public class SmartSolver extends Solver {
     }
 
     private void resetPossibilityGrid() {
+        //noinspection unchecked
         possibilityGrid = new ArrayList[81];
         for (int row = 0; row < 9; row++) {
             for (int col = 0; col < 9; col++) {
@@ -150,8 +151,8 @@ public class SmartSolver extends Solver {
     private boolean checkNumberInBlock(int row, int col, int number) {
         int realCol = col;
         int realRow = row;
-        col = (int) (col / 3);
-        row = (int) (row / 3);
+        col = col / 3;
+        row = row / 3;
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
                 if (possibilityGrid[(j + row * 3) * 9 + (i + col * 3)] != null) {
@@ -165,7 +166,7 @@ public class SmartSolver extends Solver {
                 }
             }
         }
-        return false;
+        return true;
     }
 
     private void scanPossibilities(int row, int col) {

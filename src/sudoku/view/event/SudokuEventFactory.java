@@ -7,14 +7,14 @@ import sudoku.model.SudokuModel;
  */
 public class SudokuEventFactory {
 
-    public static SudokuEventFactory INSTANCE = new SudokuEventFactory();
+    public static final SudokuEventFactory INSTANCE = new SudokuEventFactory();
 
     public SudokuEvent getPostMessageEvent(SudokuModel sudoku, String message) {
         return new SudokuEvent(SudokuEventType.PostMessage, sudoku, message);
     }
 
     public SudokuEvent getSetNumberEvent(SudokuModel sudoku, int row, int col, int newNumber) {
-        return new SudokuEvent(SudokuEventType.SetNumber, sudoku, row, col, newNumber);
+        return new SudokuEvent(sudoku, row, col, newNumber);
     }
 
     public SudokuEvent getFinishEvent(SudokuModel sudoku, String message) {

@@ -13,10 +13,10 @@ import java.util.*;
  */
 public class SudokuController {
 
-    private List<View> views;
-    private Map<String, SudokuModel> sudokus;
+    private final List<View> views;
+    private final Map<String, SudokuModel> sudokus;
 
-    public SudokuController() {
+    private SudokuController() {
         views = new ArrayList<>();
         sudokus = new LinkedHashMap<>();
 

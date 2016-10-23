@@ -8,7 +8,7 @@ import sudoku.view.event.SudokuEvent;
  */
 public abstract class View {
 
-    protected SudokuController controller;
+    protected final SudokuController controller;
 
     protected View(SudokuController controller) {
         this.controller = controller;

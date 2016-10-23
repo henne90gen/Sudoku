@@ -11,7 +11,7 @@ import java.util.Map;
  */
 public class SolverFactory {
 
-    public static SolverFactory INSTANCE = new SolverFactory();
+    public static final SolverFactory INSTANCE = new SolverFactory();
 
     private BruteForceSolver bruteForceSolver;
 
@@ -32,14 +32,14 @@ public class SolverFactory {
         return solvers;
     }
 
-    public BruteForceSolver getBruteSolver(SudokuController controller, SudokuModel sudoku) {
+    private BruteForceSolver getBruteSolver(SudokuController controller, SudokuModel sudoku) {
         if (bruteForceSolver == null) {
             bruteForceSolver = new BruteForceSolver(controller, sudoku);
         }
         return bruteForceSolver;
     }
 
-    public SmartSolver getSmartSolver(SudokuController controller, SudokuModel sudoku) {
+    private SmartSolver getSmartSolver(SudokuController controller, SudokuModel sudoku) {
         if (smartSolver == null) {
             smartSolver = new SmartSolver(controller, sudoku);
         }

@@ -10,11 +10,11 @@ import sudoku.view.event.SudokuEventFactory;
  */
 public abstract class Solver {
 
-    protected final SudokuModel sudoku;
-    protected SolverType solverType;
-    private SudokuController controller;
+    final SudokuModel sudoku;
+    final SolverType solverType;
+    private final SudokuController controller;
 
-    public Solver(SudokuController controller, SudokuModel sudoku, SolverType solverType) {
+    Solver(SudokuController controller, SudokuModel sudoku, SolverType solverType) {
         this.controller = controller;
         this.sudoku = sudoku;
         this.solverType = solverType;
@@ -34,7 +34,7 @@ public abstract class Solver {
 
     protected abstract void startSolving();
 
-    protected void postFinishMessage(String message) {
+    private void postFinishMessage(String message) {
         pushSudokuEvent(SudokuEventFactory.INSTANCE.getFinishEvent(sudoku, message));
     }
 
@@ -42,7 +42,7 @@ public abstract class Solver {
         pushSudokuEvent(SudokuEventFactory.INSTANCE.getPostMessageEvent(sudoku, message));
     }
 
-    protected void logSetNumber(int row, int col, int newNumber) {
+    void logSetNumber(int row, int col, int newNumber) {
         pushSudokuEvent(SudokuEventFactory.INSTANCE.getSetNumberEvent(sudoku, row, col, newNumber));
     }
 
@@ -50,15 +50,11 @@ public abstract class Solver {
         controller.handleSudokuEvent(event);
     }
 
-    public void reset() {
-        sudoku.resetSolver(solverType);
-    }
-
     public SolverType getSolverType() {
         return solverType;
     }
 
-    protected boolean checkColumn(int col) {
+    boolean checkColumn(int col) {
         for (int i = 0; i < 9; i++) {
             if (sudoku.getNumber(solverType, i, col) != 0) {
                 for (int j = 0; j < 9; j++) {
@@ -72,7 +68,7 @@ public abstract class Solver {
         return true;
     }
 
-    protected boolean checkRow(int row) {
+    boolean checkRow(int row) {
         for (int i = 0; i < 9; i++) {
             if (sudoku.getNumber(solverType, row, i) != 0) {
                 for (int j = 0; j < 9; j++) {
@@ -86,18 +82,17 @@ public abstract class Solver {
         return true;
     }
 
-    protected boolean checkBlock(int row, int col) {
-        col = (int) (col / 3) * 3;
-        row = (int) (row / 3) * 3;
+    boolean checkBlock(int row, int col) {
+        col = col / 3 * 3;
+        row = row / 3 * 3;
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
                 if (sudoku.getNumber(solverType, j + row, i + col) != 0) {
                     for (int k = 0; k < 3; k++) {
                         for (int l = 0; l < 3; l++) {
                             if (sudoku.getNumber(solverType, l + row, k + col) != 0)
-                                if ((sudoku.getNumber(solverType, j + row, i + col) == sudoku.getNumber(solverType, l
-                                        + row, k + col)) &&
-                                        (((i != k) ^ (j != l)) || ((i != k) && (j != l)))) {
+                                if (sudoku.getNumber(solverType, j + row, i + col) == sudoku.getNumber(solverType, l
+                                        + row, k + col) && (i != k ^ j != l || i != k)) {
                                     return false;
                                 }
                         }
