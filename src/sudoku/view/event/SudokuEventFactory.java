@@ -10,14 +10,14 @@ public class SudokuEventFactory {
     public static final SudokuEventFactory INSTANCE = new SudokuEventFactory();
 
     public SudokuEvent getPostMessageEvent(SudokuModel sudoku, String message) {
-        return new SudokuEvent(SudokuEventType.PostMessage, sudoku, message);
+        return new PostMessageEvent(sudoku, message);
     }
 
     public SudokuEvent getSetNumberEvent(SudokuModel sudoku, int row, int col, int newNumber) {
-        return new SudokuEvent(sudoku, row, col, newNumber);
+        return new SetNumberEvent(sudoku, row, col, newNumber);
     }
 
-    public SudokuEvent getFinishEvent(SudokuModel sudoku, String message) {
-        return new SudokuEvent(SudokuEventType.FinishedSolving, sudoku, message);
+    public SudokuEvent getFinishEvent(SudokuModel sudoku, long time) {
+        return new FinishedSolvingEvent(sudoku, time);
     }
 }

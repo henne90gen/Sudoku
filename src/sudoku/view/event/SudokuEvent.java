@@ -5,31 +5,25 @@ import sudoku.model.SudokuModel;
 /**
  * Created by henne on 22.10.16.
  */
-public class SudokuEvent {
+public abstract class SudokuEvent {
 
     private final SudokuEventType eventType;
 
     private final SudokuModel sudoku;
 
-    private final String message;
+    protected String message;
 
-    private int row;
+    protected int row;
 
-    private int col;
+    protected int col;
 
-    private int newNumber;
+    protected int newNumber;
 
-    public SudokuEvent(SudokuEventType eventType, SudokuModel sudoku, String message) {
+    protected long time;
+
+    protected SudokuEvent(SudokuEventType eventType, SudokuModel sudoku) {
         this.eventType = eventType;
         this.sudoku = sudoku;
-        this.message = message;
-    }
-
-    public SudokuEvent(SudokuModel sudoku, int row, int col, int newNumber) {
-        this(SudokuEventType.SetNumber, sudoku, "Placing number " + newNumber + " at position " + row + " " + col);
-        this.row = row;
-        this.col = col;
-        this.newNumber = newNumber;
     }
 
     public SudokuEventType getType() {
@@ -54,5 +48,9 @@ public class SudokuEvent {
 
     public int getNewNumber() {
         return newNumber;
+    }
+
+    public long getTime() {
+        return time;
     }
 }
