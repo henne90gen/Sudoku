@@ -1,7 +1,6 @@
 package sudoku.solver;
 
 import sudoku.ISudokuController;
-import sudoku.SudokuController;
 import sudoku.model.SudokuModel;
 
 import java.util.LinkedHashMap;
@@ -33,17 +32,11 @@ public class SolverFactory {
         return solvers;
     }
 
-    private BruteForceSolver getBruteSolver(ISudokuController controller, SudokuModel sudoku) {
-        if (bruteForceSolver == null) {
-            bruteForceSolver = new BruteForceSolver(controller, sudoku);
-        }
-        return bruteForceSolver;
+    public BruteForceSolver getBruteSolver(ISudokuController controller, SudokuModel sudoku) {
+        return new BruteForceSolver(controller, sudoku);
     }
 
-    private SmartSolver getSmartSolver(ISudokuController controller, SudokuModel sudoku) {
-        if (smartSolver == null) {
-            smartSolver = new SmartSolver(controller, sudoku);
-        }
-        return smartSolver;
+    public SmartSolver getSmartSolver(ISudokuController controller, SudokuModel sudoku) {
+        return new SmartSolver(controller, sudoku);
     }
 }

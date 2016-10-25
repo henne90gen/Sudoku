@@ -1,9 +1,13 @@
 import org.junit.Test;
 import sudoku.ISudokuController;
+import sudoku.exceptions.IllegalGridException;
 import sudoku.model.SudokuFactory;
 import sudoku.model.SudokuModel;
-import sudoku.exceptions.IllegalGridException;
+import sudoku.solver.Solver;
+import sudoku.solver.SolverFactory;
 import sudoku.solver.SolverType;
+
+import java.util.Arrays;
 
 import static org.junit.Assert.assertEquals;
 
@@ -12,7 +16,7 @@ import static org.junit.Assert.assertEquals;
  */
 public class SolverTest {
 
-    private int[] easy = {0, 4, 3, 0, 0, 0, 6, 7, 0,
+    private Integer[] easy = {0, 4, 3, 0, 0, 0, 6, 7, 0,
             0, 0, 0, 2, 9, 3, 0, 0, 4,
             2, 8, 0, 0, 0, 0, 3, 1, 0,
             0, 0, 0, 6, 0, 0, 0, 0, 0,
@@ -22,7 +26,7 @@ public class SolverTest {
             3, 0, 0, 4, 5, 2, 0, 0, 0,
             0, 2, 7, 0, 0, 0, 9, 5, 0};
 
-    private int[] easySolution = {9, 4, 3, 1, 8, 5, 6, 7, 2,
+    private Integer[] easySolution = {9, 4, 3, 1, 8, 5, 6, 7, 2,
             6, 7, 1, 2, 9, 3, 5, 8, 4,
             2, 8, 5, 7, 4, 6, 3, 1, 9,
             7, 9, 4, 6, 2, 8, 1, 3, 5,
@@ -36,71 +40,74 @@ public class SolverTest {
 
     @Test
     public void testBruteForce() throws IllegalGridException {
-        ISudokuController controller = new TestSudokuController();
-        SudokuModel sudoku = SudokuFactory.INSTANCE.getSudoku(controller);
-        sudoku.solveUsingSolver(SolverType.BruteForceSolver);
-        assertSudokuSolution(sudoku.getSolution(SolverType.BruteForceSolver), easySolution);
+        testSolver(SolverType.BruteForceSolver);
     }
 
     @Test
     public void testSmart() throws IllegalGridException {
-//        SudokuModel sudoku = new SudokuModel("Test", easy);
-//        Solver solver = new SmartSolver(sudoku);
-//        solver.addView(new ConsoleView(sudoku));
-//        solver.solve();
-//        assertSudokuSolution(sudoku, easySolution);
+        testSolver(SolverType.SmartSolver);
+    }
+
+    private void testSolver(SolverType solverType) {
+        ISudokuController controller = new TestSudokuController();
+        SudokuModel sudoku = SudokuFactory.INSTANCE.getSudoku(controller);
+        sudoku.solveUsingSolver(solverType);
+        sudoku.waitForSolver(solverType);
+        final Integer[] solution = sudoku.getSolution(solverType);
+        assertSudokuSolution(easySolution, solution);
     }
 
     @Test
     public void testCheckRow() throws IllegalGridException {
-//        int[] tmpGrid = Arrays.copyOf(easy, easy.length);
-//        tmpGrid[0] = 4;
-//        SudokuModel sudoku = new SudokuModel("Test", tmpGrid);
-//        Solver solver = new Solver(sudoku, Solver.SolverType.Custom) {
-//            @Override
-//            protected void startSolving() {
-//                assertEquals(false, checkRow(0));
-//                assertEquals(true, checkRow(1));
-//            }
-//        };
-//        solver.solve();
+        Integer[] tmpGrid = Arrays.copyOf(easy, easy.length);
+        tmpGrid[0] = 4;
+        ISudokuController controller = new TestSudokuController();
+        SudokuModel sudoku = SudokuFactory.INSTANCE.getSudoku(controller, tmpGrid);
+        Solver solver = SolverFactory.INSTANCE.getBruteSolver(controller, sudoku);
+
+        assertEquals(false, solver.checkRow(0));
+        assertEquals(true, solver.checkRow(1));
     }
 
     @Test
     public void testCheckColumn() throws IllegalGridException {
-//        int[] tmpGrid = Arrays.copyOf(easy, easy.length);
-//        tmpGrid[0] = 2;
-//        SudokuModel sudoku = new SudokuModel("Test", tmpGrid);
-//        Solver solver = new Solver(sudoku, Solver.SolverType.Custom) {
-//            @Override
-//            protected void startSolving() {
-//                assertEquals(false, checkColumn(0));
-//                assertEquals(true, checkColumn(1));
-//            }
-//        };
-//        solver.solve();
+        Integer[] tmpGrid = Arrays.copyOf(easy, easy.length);
+        tmpGrid[0] = 2;
+        ISudokuController controller = new TestSudokuController();
+        SudokuModel sudoku = SudokuFactory.INSTANCE.getSudoku(controller, tmpGrid);
+        Solver solver = SolverFactory.INSTANCE.getBruteSolver(controller, sudoku);
+
+        assertEquals(false, solver.checkColumn(0));
+        assertEquals(true, solver.checkColumn(1));
     }
 
     @Test
     public void testCheckBlock() throws IllegalGridException {
-//        int[] tmpGrid = Arrays.copyOf(easy, easy.length);
-//        tmpGrid[0] = 8;
-//        SudokuModel sudoku = new SudokuModel("Test", tmpGrid);
-//        Solver solver = new Solver(sudoku, Solver.SolverType.Custom) {
-//            @Override
-//            protected void startSolving() {
-//                assertEquals(false, checkBlock(0, 0));
-//                assertEquals(true, checkBlock(3, 0));
-//            }
-//        };
-//        solver.solve();
+        Integer[] tmpGrid = Arrays.copyOf(easy, easy.length);
+        tmpGrid[0] = 8;
+        ISudokuController controller = new TestSudokuController();
+        SudokuModel sudoku = SudokuFactory.INSTANCE.getSudoku(controller, tmpGrid);
+        Solver solver = SolverFactory.INSTANCE.getBruteSolver(controller, sudoku);
+
+        assertEquals(false, solver.checkBlock(0, 0));
+        assertEquals(true, solver.checkBlock(3, 0));
     }
 
-    private void assertSudokuSolution(Integer[] solution, int[] expectedSolution) {
+    private void assertSudokuSolution(Integer[] expectedSolution, Integer[] solution) {
         for (int row = 0; row < 9; row++) {
             for (int col = 0; col < 9; col++) {
-                assertEquals(expectedSolution[row * 9 + col],  solution[row * 9 + col].intValue());
+                assertEquals(expectedSolution[row * 9 + col], solution[row * 9 + col]);
             }
         }
+    }
+
+    private void printGrid(Integer[] grid) {
+        for (int row = 0; row < 9; row++) {
+            for (int col = 0; col < 9; col++) {
+                System.out.print(grid[row * 9 + col] + " ");
+            }
+            System.out.println();
+        }
+        System.out.println();
     }
 }

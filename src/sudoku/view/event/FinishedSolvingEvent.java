@@ -7,7 +7,7 @@ import sudoku.model.SudokuModel;
  */
 public class FinishedSolvingEvent extends SudokuEvent {
 
-    public FinishedSolvingEvent(SudokuModel sudoku, long time) {
+    public FinishedSolvingEvent(SudokuModel sudoku, float time) {
         super(SudokuEventType.FinishedSolving, sudoku);
         this.message = "Solved " + sudoku.getName() + " in " + (time / 1000) + "s";
         this.time = time;

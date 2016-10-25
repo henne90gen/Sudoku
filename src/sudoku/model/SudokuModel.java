@@ -7,7 +7,6 @@ import sudoku.solver.SolverFactory;
 import sudoku.solver.SolverType;
 
 import java.util.Arrays;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -18,10 +17,10 @@ public class SudokuModel {
     private final String name;
     private Integer[] grid;
     private Map<SolverType, Solver> solvers;
-    private Map<SolverType, Integer[]> solutions;
+    //    private Map<SolverType, Integer[]> solutions;
     private boolean[] editableFields;
 
-    public SudokuModel(ISudokuController controller, String name, int[] grid) throws IllegalGridException {
+    public SudokuModel(ISudokuController controller, String name, Integer[] grid) throws IllegalGridException {
         this.name = name;
         if (grid.length != 81) {
             throw new IllegalGridException();
@@ -39,7 +38,6 @@ public class SudokuModel {
             editableFields[i] = grid[i] == 0;
         }
 
-        solutions = new LinkedHashMap<>();
         solvers = SolverFactory.INSTANCE.getAllSolvers(controller, this);
     }
 
@@ -52,38 +50,33 @@ public class SudokuModel {
     }
 
     public int getNumber(SolverType solverType, int row, int col) {
-        Integer[] solution = solutions.get(solverType);
-        if (solution != null && isFieldEditable(row, col)) {
-            return solution[row * 9 + col];
+        Solver solver = solvers.get(solverType);
+        if (solver != null) {
+            return solver.getNumber(row, col);
         }
         return grid[row * 9 + col];
     }
 
     public void setNumber(SolverType solverType, int row, int col, int num) {
-        Integer[] solution = solutions.get(solverType);
+        Solver solver = solvers.get(solverType);
 
-        if (solution == null) return;
-
-        if (editableFields[row * 9 + col]) {
-            solution[row * 9 + col] = num;
+        if (solver != null && isFieldEditable(row, col)) {
+            solver.setNumber(row, col, num);
         }
     }
 
     public boolean solveUsingSolver(SolverType solverType) {
         Solver solver = solvers.get(solverType);
         if (solver != null) {
-            new Thread(solver::solve).start();
+            solver.solve();
             return true;
         }
         return false;
     }
 
-    public void addSolution(SolverType solverType, Integer[] solutionGrid) {
-        solutions.put(solverType, solutionGrid);
-    }
-
     public Integer[] getSolution(SolverType solverType) {
-        return solutions.get(solverType);
+        Solver solver = solvers.get(solverType);
+        return solver.getSolution();
     }
 
     public boolean isFieldEditable(int row, int col) {
@@ -91,6 +84,20 @@ public class SudokuModel {
     }
 
     public void resetSolver(SolverType solverType) {
-        solutions.put(solverType, getGridCopy());
+        Solver solver = solvers.get(solverType);
+        if (solver != null) {
+            solver.reset();
+        }
+    }
+
+    public void waitForSolver(SolverType solverType) {
+        Solver solver = solvers.get(solverType);
+        if (solver != null) {
+            solver.waitFor();
+        }
+    }
+
+    public Solver getSolver(SolverType solverType) {
+        return solvers.get(solverType);
     }
 }

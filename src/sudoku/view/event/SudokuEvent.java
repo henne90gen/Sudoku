@@ -19,7 +19,7 @@ public abstract class SudokuEvent {
 
     protected int newNumber;
 
-    protected long time;
+    protected float time;
 
     protected SudokuEvent(SudokuEventType eventType, SudokuModel sudoku) {
         this.eventType = eventType;
@@ -50,7 +50,7 @@ public abstract class SudokuEvent {
         return newNumber;
     }
 
-    public long getTime() {
+    public float getTime() {
         return time;
     }
 }

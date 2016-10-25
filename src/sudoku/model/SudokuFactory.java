@@ -1,7 +1,6 @@
 package sudoku.model;
 
 import sudoku.ISudokuController;
-import sudoku.SudokuController;
 
 /**
  * Created by henne on 22.10.16.
@@ -10,7 +9,7 @@ public class SudokuFactory {
 
     public static final SudokuFactory INSTANCE = new SudokuFactory();
 
-    private static final int[] easy = {0, 4, 3, 0, 0, 0, 6, 7, 0,
+    private static final Integer[] easy = {0, 4, 3, 0, 0, 0, 6, 7, 0,
             0, 0, 0, 2, 9, 3, 0, 0, 4,
             2, 8, 0, 0, 0, 0, 3, 1, 0,
             0, 0, 0, 6, 0, 0, 0, 0, 0,
@@ -27,6 +26,10 @@ public class SudokuFactory {
 
     public SudokuModel getSudoku(ISudokuController controller) {
         return new SudokuModel(controller, getSudokuName(), easy);
+    }
+
+    public SudokuModel getSudoku(ISudokuController controller, Integer[] grid) {
+        return new SudokuModel(controller, getSudokuName(), grid);
     }
 
     private String getSudokuName() {

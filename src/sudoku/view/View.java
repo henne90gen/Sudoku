@@ -1,6 +1,6 @@
 package sudoku.view;
 
-import sudoku.SudokuController;
+import sudoku.ISudokuController;
 import sudoku.view.event.SudokuEvent;
 
 /**
@@ -8,9 +8,9 @@ import sudoku.view.event.SudokuEvent;
  */
 public abstract class View {
 
-    protected final SudokuController controller;
+    protected final ISudokuController controller;
 
-    protected View(SudokuController controller) {
+    protected View(ISudokuController controller) {
         this.controller = controller;
         this.controller.addView(this);
     }

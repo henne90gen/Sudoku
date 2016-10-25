@@ -1,6 +1,6 @@
 package sudoku.view.console;
 
-import sudoku.SudokuController;
+import sudoku.ISudokuController;
 import sudoku.model.SudokuModel;
 import sudoku.solver.SolverType;
 import sudoku.view.View;
@@ -24,7 +24,7 @@ public class ConsoleView extends View {
 
     private BufferedReader br;
 
-    public ConsoleView(SudokuController controller) {
+    public ConsoleView(ISudokuController controller) {
         super(controller);
     }
 

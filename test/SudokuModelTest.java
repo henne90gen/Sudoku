@@ -1,5 +1,7 @@
 import org.junit.Test;
 import sudoku.exceptions.IllegalGridException;
+import sudoku.model.SudokuFactory;
+import sudoku.model.SudokuModel;
 
 import static org.junit.Assert.assertEquals;
 
@@ -8,7 +10,7 @@ import static org.junit.Assert.assertEquals;
  */
 public class SudokuModelTest {
 
-    private int[] grid = {0, 4, 3, 0, 0, 0, 6, 7, 0,
+    private static Integer[] grid = {0, 4, 3, 0, 0, 0, 6, 7, 0,
             0, 0, 0, 2, 9, 3, 0, 0, 4,
             2, 8, 0, 0, 0, 0, 3, 1, 0,
             0, 0, 0, 6, 0, 0, 0, 0, 0,
@@ -20,9 +22,11 @@ public class SudokuModelTest {
 
     @Test
     public void testConstructor() throws IllegalGridException {
-//        SudokuModel sudoku = new SudokuModel("Hello", grid);
-//        for (int i = 0; i < grid.length; i++) {
-//            assertEquals(grid[i], (long)sudoku.getGridCopy()[i]);
-//        }
+        TestSudokuController controller = new TestSudokuController();
+
+        SudokuModel sudoku = SudokuFactory.INSTANCE.getSudoku(controller, grid);
+        for (int i = 0; i < grid.length; i++) {
+            assertEquals(grid[i], sudoku.getGridCopy()[i]);
+        }
     }
 }
