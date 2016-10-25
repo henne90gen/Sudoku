@@ -1,5 +1,6 @@
 package sudoku.solver;
 
+import sudoku.ISudokuController;
 import sudoku.SudokuController;
 import sudoku.model.SudokuModel;
 
@@ -10,7 +11,7 @@ public class SmartSolver extends Solver {
 
     private List<Integer>[] possibilityGrid;
 
-    public SmartSolver(SudokuController controller, SudokuModel sudoku) {
+    public SmartSolver(ISudokuController controller, SudokuModel sudoku) {
         super(controller, sudoku, SolverType.SmartSolver);
         resetPossibilityGrid();
     }

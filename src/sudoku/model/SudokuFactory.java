@@ -1,5 +1,6 @@
 package sudoku.model;
 
+import sudoku.ISudokuController;
 import sudoku.SudokuController;
 
 /**
@@ -24,7 +25,7 @@ public class SudokuFactory {
     private SudokuFactory() {
     }
 
-    public SudokuModel getSudoku(SudokuController controller) {
+    public SudokuModel getSudoku(ISudokuController controller) {
         return new SudokuModel(controller, getSudokuName(), easy);
     }
 

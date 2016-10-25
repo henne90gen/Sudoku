@@ -1,5 +1,6 @@
 package sudoku.solver;
 
+import sudoku.ISudokuController;
 import sudoku.SudokuController;
 import sudoku.model.SudokuModel;
 
@@ -8,7 +9,7 @@ import sudoku.model.SudokuModel;
  */
 public class BruteForceSolver extends Solver {
 
-    public BruteForceSolver(SudokuController controller, SudokuModel sudoku) {
+    public BruteForceSolver(ISudokuController controller, SudokuModel sudoku) {
         super(controller, sudoku, SolverType.BruteForceSolver);
     }
 

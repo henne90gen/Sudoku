@@ -1,5 +1,6 @@
 package sudoku.solver;
 
+import sudoku.ISudokuController;
 import sudoku.SudokuController;
 import sudoku.model.SudokuModel;
 
@@ -20,7 +21,7 @@ public class SolverFactory {
     private SolverFactory() {
     }
 
-    public Map<SolverType, Solver> getAllSolvers(SudokuController controller, SudokuModel sudoku) {
+    public Map<SolverType, Solver> getAllSolvers(ISudokuController controller, SudokuModel sudoku) {
         Map<SolverType, Solver> solvers = new LinkedHashMap<>();
 
         Solver solver = getBruteSolver(controller, sudoku);
@@ -32,14 +33,14 @@ public class SolverFactory {
         return solvers;
     }
 
-    private BruteForceSolver getBruteSolver(SudokuController controller, SudokuModel sudoku) {
+    private BruteForceSolver getBruteSolver(ISudokuController controller, SudokuModel sudoku) {
         if (bruteForceSolver == null) {
             bruteForceSolver = new BruteForceSolver(controller, sudoku);
         }
         return bruteForceSolver;
     }
 
-    private SmartSolver getSmartSolver(SudokuController controller, SudokuModel sudoku) {
+    private SmartSolver getSmartSolver(ISudokuController controller, SudokuModel sudoku) {
         if (smartSolver == null) {
             smartSolver = new SmartSolver(controller, sudoku);
         }

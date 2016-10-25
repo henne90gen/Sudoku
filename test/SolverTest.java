@@ -1,4 +1,6 @@
 import org.junit.Test;
+import sudoku.ISudokuController;
+import sudoku.model.SudokuFactory;
 import sudoku.model.SudokuModel;
 import sudoku.exceptions.IllegalGridException;
 import sudoku.solver.SolverType;
@@ -34,11 +36,10 @@ public class SolverTest {
 
     @Test
     public void testBruteForce() throws IllegalGridException {
-//        SudokuModel sudoku = new SudokuModel("Test", easy);
-//        Solver solver = new BruteForceSolver(sudoku);
-//        solver.addView(new ConsoleView(sudoku));
-//        solver.solve();
-//        assertSudoku(sudoku, easySolution);
+        ISudokuController controller = new TestSudokuController();
+        SudokuModel sudoku = SudokuFactory.INSTANCE.getSudoku(controller);
+        sudoku.solveUsingSolver(SolverType.BruteForceSolver);
+        assertSudokuSolution(sudoku.getSolution(SolverType.BruteForceSolver), easySolution);
     }
 
     @Test
@@ -47,7 +48,7 @@ public class SolverTest {
 //        Solver solver = new SmartSolver(sudoku);
 //        solver.addView(new ConsoleView(sudoku));
 //        solver.solve();
-//        assertSudoku(sudoku, easySolution);
+//        assertSudokuSolution(sudoku, easySolution);
     }
 
     @Test
@@ -95,10 +96,10 @@ public class SolverTest {
 //        solver.solve();
     }
 
-    private void assertSudoku(SudokuModel sudoku, int[] solution) {
+    private void assertSudokuSolution(Integer[] solution, int[] expectedSolution) {
         for (int row = 0; row < 9; row++) {
             for (int col = 0; col < 9; col++) {
-                assertEquals(solution[row * 9 + col], sudoku.getNumber(SolverType.CustomSolver, row, col));
+                assertEquals(expectedSolution[row * 9 + col],  solution[row * 9 + col].intValue());
             }
         }
     }

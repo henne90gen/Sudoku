@@ -1,6 +1,6 @@
 package sudoku.model;
 
-import sudoku.SudokuController;
+import sudoku.ISudokuController;
 import sudoku.exceptions.IllegalGridException;
 import sudoku.solver.Solver;
 import sudoku.solver.SolverFactory;
@@ -21,7 +21,7 @@ public class SudokuModel {
     private Map<SolverType, Integer[]> solutions;
     private boolean[] editableFields;
 
-    public SudokuModel(SudokuController controller, String name, int[] grid) throws IllegalGridException {
+    public SudokuModel(ISudokuController controller, String name, int[] grid) throws IllegalGridException {
         this.name = name;
         if (grid.length != 81) {
             throw new IllegalGridException();

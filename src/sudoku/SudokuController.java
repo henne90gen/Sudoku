@@ -11,7 +11,7 @@ import java.util.*;
 /**
  * Created by henne on 19.10.16.
  */
-public class SudokuController {
+public class SudokuController implements ISudokuController {
 
     private final List<View> views;
     private final Map<String, SudokuModel> sudokus;
@@ -45,7 +45,7 @@ public class SudokuController {
         views.add(view);
     }
 
-    private void openViews() {
+    public void openViews() {
         views.forEach(View::open);
     }
 

@@ -1,5 +1,6 @@
 package sudoku.solver;
 
+import sudoku.ISudokuController;
 import sudoku.SudokuController;
 import sudoku.model.SudokuModel;
 import sudoku.view.event.SudokuEvent;
@@ -12,9 +13,9 @@ public abstract class Solver {
 
     final SudokuModel sudoku;
     final SolverType solverType;
-    private final SudokuController controller;
+    private final ISudokuController controller;
 
-    Solver(SudokuController controller, SudokuModel sudoku, SolverType solverType) {
+    Solver(ISudokuController controller, SudokuModel sudoku, SolverType solverType) {
         this.controller = controller;
         this.sudoku = sudoku;
         this.solverType = solverType;
@@ -29,13 +30,13 @@ public abstract class Solver {
         long endTime = System.nanoTime();
         float solveTime = (endTime - startTime) / 1000000000.0f;
 
-        postFinishMessage("Solved sudoku '" + sudoku.getName() + "' in " + solveTime + "s");
+        postFinishMessage((long) solveTime);
     }
 
     protected abstract void startSolving();
 
-    private void postFinishMessage(String message) {
-        pushSudokuEvent(SudokuEventFactory.INSTANCE.getFinishEvent(sudoku, message));
+    private void postFinishMessage(long time) {
+        pushSudokuEvent(SudokuEventFactory.INSTANCE.getFinishEvent(sudoku, time));
     }
 
     protected void postMessage(String message) {
