@@ -36,8 +36,6 @@ public class SolverTest {
             3, 1, 9, 4, 5, 2, 8, 6, 7,
             4, 2, 7, 8, 6, 1, 9, 5, 3};
 
-    // FIXME re-enable tests
-
     @Test
     public void testBruteForce() throws IllegalGridException {
         testSolver(SolverType.BruteForceSolver);
