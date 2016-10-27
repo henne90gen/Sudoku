@@ -1,4 +1,4 @@
-package sudoku.solver;
+package sudoku.model;
 
 /**
  * Created by henne on 27.10.16.

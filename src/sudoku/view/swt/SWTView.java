@@ -226,8 +226,8 @@ public class SWTView extends View {
                 case SetNumber:
                     resetHighlightedColor(event.getSudoku().getName());
                     Text[] grid = grids.get(event.getSudoku().getName());
-                    highlightedRow = event.getRow();
-                    highlightedCol = event.getCol();
+                    highlightedRow = event.getPosition().getRow();
+                    highlightedCol = event.getPosition().getCol();
                     grid[highlightedRow * 9 + highlightedCol].setBackground(new Color(display, 0, 255, 0));
                     grid[highlightedRow * 9 + highlightedCol].setText("" + event.getNewNumber());
                     break;

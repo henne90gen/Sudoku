@@ -2,6 +2,7 @@ package sudoku.solver;
 
 import sudoku.ISudokuController;
 import sudoku.model.SudokuModel;
+import sudoku.model.SudokuPosition;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,10 +13,10 @@ public class SmartSolver extends Solver {
 
     public SmartSolver(ISudokuController controller, SudokuModel sudoku) {
         super(controller, sudoku, SolverType.SmartSolver);
-        resetPossibilityGrid();
+        resetSolver();
     }
 
-    private void resetPossibilityGrid() {
+    protected void resetSolver() {
         //noinspection unchecked
         possibilityGrid = new ArrayList[81];
         for (int row = 0; row < 9; row++) {
@@ -28,98 +29,70 @@ public class SmartSolver extends Solver {
     @Override
     protected void startSolving() {
         do {
-            scanPossibilities(0, 0);
-        } while (placeSingleNumber(0, 0));
+            scanPossibilities(new SudokuPosition(0, 0));
+        } while (placeSingleNumber(new SudokuPosition(0, 0)));
 
-        nextPossibleCell(0, 0);
+        nextPossibleCell(new SudokuPosition(0, 0));
     }
 
-    private boolean nextPossibleCell(int row, int col) {
-        scanPossibilities(0, 0);
-        if (sudoku.getNumber(solverType, row, col) == 0) {
-            if (possibilityGrid[row * 9 + col].size() == 0) {
-                scanPossibilities(0, 0);
-                if (possibilityGrid[row * 9 + col].size() == 0) {
+    private boolean nextPossibleCell(SudokuPosition pos) {
+        SudokuPosition position = new SudokuPosition(pos.getRow(), pos.getCol());
+        scanPossibilities(new SudokuPosition(0, 0));
+        if (getNumber(position) == 0) {
+            if (possibilityGrid[position.getRow() * 9 + position.getCol()].size() == 0) {
+                scanPossibilities(new SudokuPosition(0, 0));
+                if (possibilityGrid[position.getRow() * 9 + position.getCol()].size() == 0) {
                     return false;
                 }
             }
-            if (nextPossibleNumber(row, col, 0)) {
-                if (col < 8) {
-                    col++;
-                } else if (row < 8) {
-                    col = 0;
-                    row++;
-                } else {
+            if (nextPossibleNumber(position, 0)) {
+                if (!position.moveRight()) {
                     return true;
                 }
-                if (!nextPossibleCell(row, col)) {
-                    if (col > 0) {
-                        col--;
-                    } else if (row > 0) {
-                        col = 8;
-                        row--;
-                    }
-                    return nextPossibleCell(row, col);
-                } else {
-                    return false;
+                if (!nextPossibleCell(position)) {
+                    position.moveLeft();
+                    return nextPossibleCell(position);
                 }
-            } else {
                 return false;
             }
-        } else {
-            if (col < 8) {
-                col++;
-            } else if (row < 8) {
-                col = 0;
-                row++;
-            } else {
-                return true;
-            }
-            return nextPossibleCell(row, col);
-        }
-    }
-
-    private boolean nextPossibleNumber(int row, int col, int index) {
-        scanPossibilities(0, 0);
-        if (possibilityGrid[row * 9 + col] != null && possibilityGrid[row * 9 + col].size() > index) {
-            sudoku.setNumber(solverType, row, col, possibilityGrid[row * 9 + col].get(index));
-            logSetNumber(row, col, possibilityGrid[row * 9 + col].get(index));
-            scanPossibilities(0, 0);
-        } else {
-            sudoku.setNumber(solverType, row, col, 0);
-            scanPossibilities(0, 0);
             return false;
         }
-        int[][] tmpGrid = new int[9][9];
-        for (int i = 0; i < 9; i++) {
-            for (int j = 0; j < 9; j++) {
-                tmpGrid[i][j] = sudoku.getNumber(solverType, i, j);
-            }
-        }
-        return nextPossibleNumber(row, col, ++index);
+        return !position.moveRight() || nextPossibleCell(position);
     }
 
-    private boolean placeSingleNumber(int row, int col) {
-        if (possibilityGrid[row * 9 + col] != null) {
-            for (int j = 0; j < possibilityGrid[row * 9 + col].size(); j++) {
-                if (checkNumberInColumn(row, col, possibilityGrid[row * 9 + col].get(j)) ||
-                        checkNumberInRow(row, col, possibilityGrid[row * 9 + col].get(j)) ||
-                        checkNumberInBlock(row, col, possibilityGrid[row * 9 + col].get(j))) {
-                    sudoku.setNumber(solverType, row, col, possibilityGrid[row * 9 + col].get(j));
-                    logSetNumber(row, col, possibilityGrid[row * 9 + col].get(j));
+    private boolean nextPossibleNumber(SudokuPosition pos, int index) {
+        SudokuPosition position = new SudokuPosition(pos.getRow(), pos.getCol());
+        scanPossibilities(new SudokuPosition(0, 0));
+        if (possibilityGrid[position.getRow() * 9 + position.getCol()] != null && possibilityGrid[position.getRow() *
+                9 + position.getCol()].size() > index) {
+            setNumber(position, possibilityGrid[position.getRow() * 9 + position.getCol()].get(index));
+            logSetNumber(position, possibilityGrid[position.getRow() * 9 + position.getCol()].get(index));
+            scanPossibilities(new SudokuPosition(0, 0));
+        } else {
+            setNumber(position, 0);
+            scanPossibilities(new SudokuPosition(0, 0));
+            return false;
+        }
+        return nextPossibleNumber(position, ++index);
+    }
+
+    private boolean placeSingleNumber(SudokuPosition pos) {
+        SudokuPosition position = new SudokuPosition(pos.getRow(), pos.getCol());
+        if (possibilityGrid[position.getRow() * 9 + position.getCol()] != null) {
+            for (int j = 0; j < possibilityGrid[position.getRow() * 9 + position.getCol()].size(); j++) {
+                if (checkNumberInColumn(position.getRow(), position.getCol(), possibilityGrid[position.getRow() * 9 +
+                        position.getCol()].get(j)) ||
+                        checkNumberInRow(position.getRow(), position.getCol(), possibilityGrid[position.getRow() * 9
+                                + position.getCol()].get(j)) ||
+                        checkNumberInBlock(position.getRow(), position.getCol(), possibilityGrid[position.getRow() *
+                                9 + position.getCol()].get(j))) {
+                    setNumber(position, possibilityGrid[position.getRow() * 9 + position.getCol()].get(j));
+                    logSetNumber(position, possibilityGrid[position.getRow() * 9 + position.getCol()].get(j));
                     return true;
                 }
             }
         }
-        if (col < 8) {
-            col++;
-        } else if (row < 8) {
-            col = 0;
-            row++;
-        } else {
-            return false;
-        }
-        return placeSingleNumber(row, col);
+        return position.moveRight() && placeSingleNumber(position);
     }
 
     private boolean checkNumberInRow(int row, int col, int number) {
@@ -169,36 +142,33 @@ public class SmartSolver extends Solver {
         return true;
     }
 
-    private void scanPossibilities(int row, int col) {
-        if (col == 0 && row == 0) {
-            resetPossibilityGrid();
+    private void scanPossibilities(SudokuPosition pos) {
+        SudokuPosition position = new SudokuPosition(pos.getRow(), pos.getCol());
+        if (position.getCol() == 0 && position.getRow() == 0) {
+            resetSolver();
         }
-        if (sudoku.getNumber(solverType, row, col) == 0) {
-            possibilityGrid[row * 9 + col] = new ArrayList<>();
+        if (getNumber(position) == 0) {
+            possibilityGrid[position.getRow() * 9 + position.getCol()] = new ArrayList<>();
             for (int k = 1; k < 10; k++) {
-                sudoku.setNumber(solverType, row, col, k);
-                if (validateRow(row) && validateColumn(col) && validateBlock(row, col)) {
-                    possibilityGrid[row * 9 + col].add(k);
+                setNumber(position, k);
+                if (validateRow(position.getRow()) && validateColumn(position.getCol()) && validateBlock(position
+                        .getRow(), position.getCol())) {
+                    possibilityGrid[position.getRow() * 9 + position.getCol()].add(k);
                 }
-                sudoku.setNumber(solverType, row, col, 0);
+                setNumber(position, 0);
             }
-            if (possibilityGrid[row * 9 + col].size() == 1) {
-                sudoku.setNumber(solverType, row, col, possibilityGrid[row * 9 + col].get(0));
-                logSetNumber(row, col, possibilityGrid[row * 9 + col].get(0));
-                possibilityGrid[row * 9 + col] = null;
-                scanPossibilities(0, 0);
+            if (possibilityGrid[position.getRow() * 9 + position.getCol()].size() == 1) {
+                setNumber(position, possibilityGrid[position.getRow() * 9 + position.getCol()].get(0));
+                logSetNumber(position, possibilityGrid[position.getRow() * 9 + position.getCol()].get(0));
+                possibilityGrid[position.getRow() * 9 + position.getCol()] = null;
+                scanPossibilities(new SudokuPosition(0, 0));
             }
         } else {
-            possibilityGrid[row * 9 + col] = null;
+            possibilityGrid[position.getRow() * 9 + position.getCol()] = null;
         }
-        if (col < 8) {
-            col++;
-        } else if (row < 8) {
-            col = 0;
-            row++;
-        } else {
+        if (!position.moveRight()) {
             return;
         }
-        scanPossibilities(row, col);
+        scanPossibilities(position);
     }
 }

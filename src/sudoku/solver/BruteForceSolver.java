@@ -2,6 +2,7 @@ package sudoku.solver;
 
 import sudoku.ISudokuController;
 import sudoku.model.SudokuModel;
+import sudoku.model.SudokuPosition;
 
 /**
  * Created by henne on 16.10.16.
@@ -15,6 +16,11 @@ public class BruteForceSolver extends Solver {
     @Override
     public void startSolving() {
         nextCell(new SudokuPosition(0, 0));
+    }
+
+    @Override
+    protected void resetSolver() {
+        // do nothing
     }
 
     private boolean nextCell(SudokuPosition p) {
@@ -37,12 +43,12 @@ public class BruteForceSolver extends Solver {
 
     private boolean nextNumber(SudokuPosition p) {
         SudokuPosition position = new SudokuPosition(p.getRow(), p.getCol());
-        if (getNumber(position.getRow(), position.getCol()) < 9) {
-            int newNumber = getNumber(position.getRow(), position.getCol()) + 1;
-            logSetNumber(position.getRow(), position.getCol(), newNumber);
-            setNumber(position.getRow(), position.getCol(), newNumber);
+        if (getNumber(position) < 9) {
+            int newNumber = getNumber(position) + 1;
+            logSetNumber(position, newNumber);
+            setNumber(position, newNumber);
         } else {
-            setNumber(position.getRow(), position.getCol(), 0);
+            setNumber(position, 0);
             return false;
         }
         return validateRow(position.getRow()) && validateColumn(position.getCol()) && validateBlock(position.getRow()

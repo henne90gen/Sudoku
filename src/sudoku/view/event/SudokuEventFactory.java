@@ -1,6 +1,7 @@
 package sudoku.view.event;
 
 import sudoku.model.SudokuModel;
+import sudoku.model.SudokuPosition;
 
 /**
  * Created by henne on 22.10.16.
@@ -13,8 +14,8 @@ public class SudokuEventFactory {
         return new PostMessageEvent(sudoku, message);
     }
 
-    public SudokuEvent getSetNumberEvent(SudokuModel sudoku, int row, int col, int newNumber) {
-        return new SetNumberEvent(sudoku, row, col, newNumber);
+    public SudokuEvent getSetNumberEvent(SudokuModel sudoku, SudokuPosition position, int newNumber) {
+        return new SetNumberEvent(sudoku, position, newNumber);
     }
 
     public SudokuEvent getFinishEvent(SudokuModel sudoku, float time) {

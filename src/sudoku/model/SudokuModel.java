@@ -52,7 +52,7 @@ public class SudokuModel {
     public int getNumber(SolverType solverType, int row, int col) {
         Solver solver = solvers.get(solverType);
         if (solver != null) {
-            return solver.getNumber(row, col);
+            return solver.getNumber(new SudokuPosition(row, col));
         }
         return grid[row * 9 + col];
     }
@@ -61,7 +61,7 @@ public class SudokuModel {
         Solver solver = solvers.get(solverType);
 
         if (solver != null && isFieldEditable(row, col)) {
-            solver.setNumber(row, col, num);
+            solver.setNumber(new SudokuPosition(row, col), num);
         }
     }
 

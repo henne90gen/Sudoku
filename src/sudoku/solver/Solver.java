@@ -2,6 +2,7 @@ package sudoku.solver;
 
 import sudoku.ISudokuController;
 import sudoku.model.SudokuModel;
+import sudoku.model.SudokuPosition;
 import sudoku.view.event.SudokuEvent;
 import sudoku.view.event.SudokuEventFactory;
 
@@ -59,12 +60,12 @@ public abstract class Solver {
 
     protected abstract void startSolving();
 
-    public int getNumber(int row, int col) {
-        return solution[row * 9 + col];
+    public int getNumber(SudokuPosition position) {
+        return solution[position.getRow() * 9 + position.getCol()];
     }
 
-    public void setNumber(int row, int col, int num) {
-        solution[row * 9 + col] = num;
+    public void setNumber(SudokuPosition position, int num) {
+        solution[position.getRow() * 9 + position.getCol()] = num;
     }
 
     private void postFinishMessage(float time) {
@@ -75,8 +76,8 @@ public abstract class Solver {
         pushSudokuEvent(SudokuEventFactory.INSTANCE.getPostMessageEvent(sudoku, message));
     }
 
-    void logSetNumber(int row, int col, int newNumber) {
-        pushSudokuEvent(SudokuEventFactory.INSTANCE.getSetNumberEvent(sudoku, row, col, newNumber));
+    void logSetNumber(SudokuPosition position, int newNumber) {
+        pushSudokuEvent(SudokuEventFactory.INSTANCE.getSetNumberEvent(sudoku, position, newNumber));
     }
 
     private void pushSudokuEvent(SudokuEvent event) {
@@ -94,8 +95,9 @@ public abstract class Solver {
     public boolean validateColumn(int colToCheck) {
         for (int row1 = 0; row1 < 9; row1++) {
             for (int row2 = 0; row2 < row1; row2++) {
-                if (getNumber(row1, colToCheck) != 0 && getNumber(row1, colToCheck) == getNumber(row2,
-                        colToCheck)) {
+                SudokuPosition pos1 = new SudokuPosition(row1, colToCheck);
+                SudokuPosition pos2 = new SudokuPosition(row2, colToCheck);
+                if (getNumber(pos1) != 0 && getNumber(pos1) == getNumber(pos2)) {
                     return false;
                 }
             }
@@ -136,7 +138,7 @@ public abstract class Solver {
         int index = 0;
         for (int i = row; i < row + 3; i++) {
             for (int j = col; j < col + 3; j++) {
-                blockAsRow[index++] = getNumber(i, j);
+                blockAsRow[index++] = getNumber(new SudokuPosition(i, j));
             }
         }
 
@@ -157,5 +159,8 @@ public abstract class Solver {
 
     public void reset() {
         solution = sudoku.getGridCopy();
+        resetSolver();
     }
+
+    protected abstract void resetSolver();
 }
