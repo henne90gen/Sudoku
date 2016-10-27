@@ -9,7 +9,7 @@ import java.util.List;
 
 public class SmartSolver extends Solver {
 
-    private List<Integer>[] possibilityGrid;
+    private List<Integer>[] notesListGrid;
 
     public SmartSolver(ISudokuController controller, SudokuModel sudoku) {
         super(controller, sudoku, SolverType.SmartSolver);
@@ -18,10 +18,10 @@ public class SmartSolver extends Solver {
 
     protected void resetSolver() {
         //noinspection unchecked
-        possibilityGrid = new ArrayList[81];
+        notesListGrid = new ArrayList[81];
         for (int row = 0; row < 9; row++) {
             for (int col = 0; col < 9; col++) {
-                possibilityGrid[row * 9 + col] = new ArrayList<>();
+                notesListGrid[row * 9 + col] = new ArrayList<>();
             }
         }
     }
@@ -39,9 +39,9 @@ public class SmartSolver extends Solver {
         SudokuPosition position = new SudokuPosition(pos.getRow(), pos.getCol());
         scanPossibilities(new SudokuPosition(0, 0));
         if (getNumber(position) == 0) {
-            if (possibilityGrid[position.getRow() * 9 + position.getCol()].size() == 0) {
+            if (getNotesList(position).size() == 0) {
                 scanPossibilities(new SudokuPosition(0, 0));
-                if (possibilityGrid[position.getRow() * 9 + position.getCol()].size() == 0) {
+                if (getNotesList(position).size() == 0) {
                     return false;
                 }
             }
@@ -63,10 +63,9 @@ public class SmartSolver extends Solver {
     private boolean nextPossibleNumber(SudokuPosition pos, int index) {
         SudokuPosition position = new SudokuPosition(pos.getRow(), pos.getCol());
         scanPossibilities(new SudokuPosition(0, 0));
-        if (possibilityGrid[position.getRow() * 9 + position.getCol()] != null && possibilityGrid[position.getRow() *
-                9 + position.getCol()].size() > index) {
-            setNumber(position, possibilityGrid[position.getRow() * 9 + position.getCol()].get(index));
-            logSetNumber(position, possibilityGrid[position.getRow() * 9 + position.getCol()].get(index));
+        if (getNotesList(position) != null && getNotesList(position).size() > index) {
+            setNumber(position, getNotesList(position).get(index));
+            logSetNumber(position, getNotesList(position).get(index));
             scanPossibilities(new SudokuPosition(0, 0));
         } else {
             setNumber(position, 0);
@@ -78,16 +77,13 @@ public class SmartSolver extends Solver {
 
     private boolean placeSingleNumber(SudokuPosition pos) {
         SudokuPosition position = new SudokuPosition(pos.getRow(), pos.getCol());
-        if (possibilityGrid[position.getRow() * 9 + position.getCol()] != null) {
-            for (int j = 0; j < possibilityGrid[position.getRow() * 9 + position.getCol()].size(); j++) {
-                if (checkNumberInColumn(position.getRow(), position.getCol(), possibilityGrid[position.getRow() * 9 +
-                        position.getCol()].get(j)) ||
-                        checkNumberInRow(position.getRow(), position.getCol(), possibilityGrid[position.getRow() * 9
-                                + position.getCol()].get(j)) ||
-                        checkNumberInBlock(position.getRow(), position.getCol(), possibilityGrid[position.getRow() *
-                                9 + position.getCol()].get(j))) {
-                    setNumber(position, possibilityGrid[position.getRow() * 9 + position.getCol()].get(j));
-                    logSetNumber(position, possibilityGrid[position.getRow() * 9 + position.getCol()].get(j));
+        if (getNotesList(position) != null) {
+            for (int j = 0; j < getNotesList(position).size(); j++) {
+                if (checkNumberInColumn(position.getRow(), position.getCol(), getNotesList(position).get(j)) ||
+                        checkNumberInRow(position.getRow(), position.getCol(), getNotesList(position).get(j)) ||
+                        checkNumberInBlock(position.getRow(), position.getCol(), getNotesList(position).get(j))) {
+                    setNumber(position, getNotesList(position).get(j));
+                    logSetNumber(position, getNotesList(position).get(j));
                     return true;
                 }
             }
@@ -96,10 +92,11 @@ public class SmartSolver extends Solver {
     }
 
     private boolean checkNumberInRow(int row, int col, int number) {
+        // TODO refactor this
         for (int i = 0; i < 9; i++) {
-            if (possibilityGrid[row * 9 + i] != null) {
-                for (int j = 0; j < possibilityGrid[row * 9 + i].size(); j++) {
-                    if (possibilityGrid[row * 9 + i].get(j) == number && col != i) {
+            if (getNotesList(new SudokuPosition(row, i)) != null) {
+                for (int j = 0; j < getNotesList(new SudokuPosition(row, i)).size(); j++) {
+                    if (getNotesList(new SudokuPosition(row, i)).get(j) == number && col != i) {
                         return false;
                     }
                 }
@@ -109,10 +106,11 @@ public class SmartSolver extends Solver {
     }
 
     private boolean checkNumberInColumn(int row, int col, int number) {
+        // TODO refactor this
         for (int i = 0; i < 9; i++) {
-            if (possibilityGrid[i * 9 + col] != null) {
-                for (int j = 0; j < possibilityGrid[i * 9 + col].size(); j++) {
-                    if (possibilityGrid[i * 9 + col].get(j) == number && row != i) {
+            if (getNotesList(new SudokuPosition(i, col)) != null) {
+                for (int j = 0; j < getNotesList(new SudokuPosition(i, col)).size(); j++) {
+                    if (getNotesList(new SudokuPosition(i, col)).get(j) == number && row != i) {
                         return false;
                     }
                 }
@@ -122,16 +120,19 @@ public class SmartSolver extends Solver {
     }
 
     private boolean checkNumberInBlock(int row, int col, int number) {
+        // TODO refactor this
         int realCol = col;
         int realRow = row;
         col = col / 3;
         row = row / 3;
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
-                if (possibilityGrid[(j + row * 3) * 9 + (i + col * 3)] != null) {
-                    for (int k = 0; k < possibilityGrid[(j + row * 3) * 9 + (i + col * 3)].size(); k++) {
-                        if (possibilityGrid[(j + row * 3) * 9 + (i + col * 3)].get(k) == number) {
-                            if (realCol != i + col * 3 && realRow != j + row * 3) {
+                int currentRow = j + row * 3;
+                int currentCol = i + col * 3;
+                if (getNotesList(new SudokuPosition(currentRow, currentCol)) != null) {
+                    for (int k = 0; k < getNotesList(new SudokuPosition(currentRow, currentCol)).size(); k++) {
+                        if (getNotesList(new SudokuPosition(currentRow, currentCol)).get(k) == number) {
+                            if (realCol != currentCol && realRow != currentRow) {
                                 return false;
                             }
                         }
@@ -148,27 +149,35 @@ public class SmartSolver extends Solver {
             resetSolver();
         }
         if (getNumber(position) == 0) {
-            possibilityGrid[position.getRow() * 9 + position.getCol()] = new ArrayList<>();
+            setNotesList(position, new ArrayList<>());
             for (int k = 1; k < 10; k++) {
                 setNumber(position, k);
                 if (validateRow(position.getRow()) && validateColumn(position.getCol()) && validateBlock(position
                         .getRow(), position.getCol())) {
-                    possibilityGrid[position.getRow() * 9 + position.getCol()].add(k);
+                    getNotesList(position).add(k);
                 }
                 setNumber(position, 0);
             }
-            if (possibilityGrid[position.getRow() * 9 + position.getCol()].size() == 1) {
-                setNumber(position, possibilityGrid[position.getRow() * 9 + position.getCol()].get(0));
-                logSetNumber(position, possibilityGrid[position.getRow() * 9 + position.getCol()].get(0));
-                possibilityGrid[position.getRow() * 9 + position.getCol()] = null;
+            if (getNotesList(position).size() == 1) {
+                setNumber(position, getNotesList(position).get(0));
+                logSetNumber(position, getNotesList(position).get(0));
+                setNotesList(position, null);
                 scanPossibilities(new SudokuPosition(0, 0));
             }
         } else {
-            possibilityGrid[position.getRow() * 9 + position.getCol()] = null;
+            setNotesList(position, null);
         }
         if (!position.moveRight()) {
             return;
         }
         scanPossibilities(position);
+    }
+
+    private List<Integer> getNotesList(SudokuPosition position) {
+        return notesListGrid[position.getRow() * 9 + position.getCol()];
+    }
+
+    private void setNotesList(SudokuPosition position, List<Integer> grid) {
+        notesListGrid[position.getRow() * 9 + position.getCol()] = grid;
     }
 }
