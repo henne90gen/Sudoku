@@ -1,7 +1,6 @@
 package sudoku.solver;
 
 import sudoku.ISudokuController;
-import sudoku.SudokuController;
 import sudoku.model.SudokuModel;
 
 /**
@@ -65,6 +64,6 @@ public class BruteForceSolver extends Solver {
             sudoku.setNumber(solverType, row, col, 0);
             return false;
         }
-        return checkRow(row) && checkColumn(col) && checkBlock(row, col) || nextNumber(row, col);
+        return validateRow(row) && validateColumn(col) && validateBlock(row, col) || nextNumber(row, col);
     }
 }

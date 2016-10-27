@@ -1,7 +1,6 @@
 package sudoku.solver;
 
 import sudoku.ISudokuController;
-import sudoku.SudokuController;
 import sudoku.model.SudokuModel;
 
 import java.util.ArrayList;
@@ -178,7 +177,7 @@ public class SmartSolver extends Solver {
             possibilityGrid[row * 9 + col] = new ArrayList<>();
             for (int k = 1; k < 10; k++) {
                 sudoku.setNumber(solverType, row, col, k);
-                if (checkRow(row) && checkColumn(col) && checkBlock(row, col)) {
+                if (validateRow(row) && validateColumn(col) && validateBlock(row, col)) {
                     possibilityGrid[row * 9 + col].add(k);
                 }
                 sudoku.setNumber(solverType, row, col, 0);

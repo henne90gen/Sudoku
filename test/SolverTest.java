@@ -63,8 +63,8 @@ public class SolverTest {
         SudokuModel sudoku = SudokuFactory.INSTANCE.getSudoku(controller, tmpGrid);
         Solver solver = SolverFactory.INSTANCE.getBruteSolver(controller, sudoku);
 
-        assertEquals(false, solver.checkRow(0));
-        assertEquals(true, solver.checkRow(1));
+        assertEquals(false, solver.validateRow(0));
+        assertEquals(true, solver.validateRow(1));
     }
 
     @Test
@@ -75,8 +75,8 @@ public class SolverTest {
         SudokuModel sudoku = SudokuFactory.INSTANCE.getSudoku(controller, tmpGrid);
         Solver solver = SolverFactory.INSTANCE.getBruteSolver(controller, sudoku);
 
-        assertEquals(false, solver.checkColumn(0));
-        assertEquals(true, solver.checkColumn(1));
+        assertEquals(false, solver.validateColumn(0));
+        assertEquals(true, solver.validateColumn(1));
     }
 
     @Test
@@ -87,8 +87,8 @@ public class SolverTest {
         SudokuModel sudoku = SudokuFactory.INSTANCE.getSudoku(controller, tmpGrid);
         Solver solver = SolverFactory.INSTANCE.getBruteSolver(controller, sudoku);
 
-        assertEquals(false, solver.checkBlock(0, 0));
-        assertEquals(true, solver.checkBlock(3, 0));
+        assertEquals(false, solver.validateBlock(0, 0));
+        assertEquals(true, solver.validateBlock(3, 0));
     }
 
     private void assertSudokuSolution(Integer[] expectedSolution, Integer[] solution) {
