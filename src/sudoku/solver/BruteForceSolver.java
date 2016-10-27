@@ -14,56 +14,38 @@ public class BruteForceSolver extends Solver {
 
     @Override
     public void startSolving() {
-        nextCell(0, 0);
+        nextCell(new SudokuPosition(0, 0));
     }
 
-    private boolean nextCell(int row, int col) {
-        if (sudoku.isFieldEditable(row, col)) {
-            if (nextNumber(row, col)) {
-                if (col < 8) {
-                    col++;
-                } else if (row < 8) {
-                    col = 0;
-                    row++;
-                } else {
+    private boolean nextCell(SudokuPosition p) {
+        SudokuPosition position = new SudokuPosition(p.getRow(), p.getCol());
+        if (sudoku.isFieldEditable(position.getRow(), position.getCol())) {
+            if (nextNumber(position)) {
+                if (!position.moveRight()) {
                     return true;
                 }
-                if (!nextCell(row, col)) {
-                    if (col > 0) {
-                        col--;
-                    } else if (row > 0) {
-                        col = 8;
-                        row--;
-                    }
-                    return nextCell(row, col);
-                } else {
-                    return true;
+                if (!nextCell(position)) {
+                    position.moveLeft();
+                    return nextCell(position);
                 }
-            } else {
-                return false;
-            }
-        } else {
-            if (col < 8) {
-                col++;
-            } else if (row < 8) {
-                col = 0;
-                row++;
-            } else {
                 return true;
             }
-            return nextCell(row, col);
-        }
-    }
-
-    private boolean nextNumber(int row, int col) {
-        if (sudoku.getNumber(solverType, row, col) < 9) {
-            int newNumber = sudoku.getNumber(solverType, row, col) + 1;
-            logSetNumber(row, col, newNumber);
-            sudoku.setNumber(solverType, row, col, newNumber);
-        } else {
-            sudoku.setNumber(solverType, row, col, 0);
             return false;
         }
-        return validateRow(row) && validateColumn(col) && validateBlock(row, col) || nextNumber(row, col);
+        return !position.moveRight() || nextCell(position);
+    }
+
+    private boolean nextNumber(SudokuPosition p) {
+        SudokuPosition position = new SudokuPosition(p.getRow(), p.getCol());
+        if (getNumber(position.getRow(), position.getCol()) < 9) {
+            int newNumber = getNumber(position.getRow(), position.getCol()) + 1;
+            logSetNumber(position.getRow(), position.getCol(), newNumber);
+            setNumber(position.getRow(), position.getCol(), newNumber);
+        } else {
+            setNumber(position.getRow(), position.getCol(), 0);
+            return false;
+        }
+        return validateRow(position.getRow()) && validateColumn(position.getCol()) && validateBlock(position.getRow()
+                , position.getCol()) || nextNumber(position);
     }
 }

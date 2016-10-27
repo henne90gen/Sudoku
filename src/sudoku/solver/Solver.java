@@ -16,9 +16,9 @@ public abstract class Solver {
 
     private final ISudokuController controller;
 
-    private Thread solveThread;
+    protected Integer[] solution;
 
-    private Integer[] solution;
+    private Thread solveThread;
 
     public Solver(ISudokuController controller, SudokuModel sudoku, SolverType solverType) {
         this.controller = controller;
@@ -28,6 +28,10 @@ public abstract class Solver {
         solution = sudoku.getGridCopy();
     }
 
+    /**
+     * Starts the solving process.
+     * A new thread is used for this, to prevent the solver from blocking anything else.
+     */
     public void solve() {
         solveThread = new Thread(this::run);
         solveThread.start();
@@ -42,6 +46,9 @@ public abstract class Solver {
         postFinishMessage(solveTime);
     }
 
+    /**
+     * Blocks until the solver has finished solving
+     */
     public void waitFor() {
         try {
             solveThread.join();
@@ -87,8 +94,8 @@ public abstract class Solver {
     public boolean validateColumn(int colToCheck) {
         for (int row1 = 0; row1 < 9; row1++) {
             for (int row2 = 0; row2 < row1; row2++) {
-                if (solution[row1 * 9 + colToCheck] != 0 && solution[row1 * 9 + colToCheck].equals(solution[row2 * 9
-                        + colToCheck])) {
+                if (getNumber(row1, colToCheck) != 0 && getNumber(row1, colToCheck) == getNumber(row2,
+                        colToCheck)) {
                     return false;
                 }
             }
@@ -129,7 +136,7 @@ public abstract class Solver {
         int index = 0;
         for (int i = row; i < row + 3; i++) {
             for (int j = col; j < col + 3; j++) {
-                blockAsRow[index++] = solution[i * 9 + j];
+                blockAsRow[index++] = getNumber(i, j);
             }
         }
 

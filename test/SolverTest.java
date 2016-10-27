@@ -94,7 +94,8 @@ public class SolverTest {
     private void assertSudokuSolution(Integer[] expectedSolution, Integer[] solution) {
         for (int row = 0; row < 9; row++) {
             for (int col = 0; col < 9; col++) {
-                assertEquals(expectedSolution[row * 9 + col], solution[row * 9 + col]);
+                assertEquals("Row: " + row + " | Col: " + col, expectedSolution[row * 9 + col], solution[row * 9 +
+                        col]);
             }
         }
     }
