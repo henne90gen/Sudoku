@@ -3,6 +3,8 @@ import sudoku.ISudokuController;
 import sudoku.exceptions.IllegalGridException;
 import sudoku.model.SudokuFactory;
 import sudoku.model.SudokuModel;
+import sudoku.model.SudokuPosition;
+import sudoku.solver.SmartSolver;
 import sudoku.solver.Solver;
 import sudoku.solver.SolverFactory;
 import sudoku.solver.SolverType;
@@ -18,7 +20,7 @@ public class SolverTest {
 
     private Integer[] easy = {0, 4, 3, 0, 0, 0, 6, 7, 0,
             0, 0, 0, 2, 9, 3, 0, 0, 4,
-            2, 8, 0, 0, 0, 0, 3, 1, 0,
+            2, 8, 0, 0, 0, 0, 3, 1, 9,
             0, 0, 0, 6, 0, 0, 0, 0, 0,
             1, 0, 0, 5, 0, 7, 0, 0, 8,
             0, 0, 0, 0, 0, 4, 0, 0, 0,
@@ -56,7 +58,30 @@ public class SolverTest {
     }
 
     @Test
-    public void testCheckRow() throws IllegalGridException {
+    public void testCheckNumberInRow() {
+        ISudokuController controller = new TestSudokuController();
+        SudokuModel sudoku = SudokuFactory.INSTANCE.getSudoku(controller);
+        SudokuPosition topLeft = new SudokuPosition(0, 0);
+        SmartSolver solver = new SmartSolver(controller, sudoku);
+        solver.scanPossibilities(topLeft);
+
+        assertEquals(true, solver.checkNumberInRow(topLeft, 9));
+        assertEquals(false, solver.checkNumberInRow(topLeft, 5));
+        assertEquals(false, solver.checkNumberInRow(topLeft, 3));
+    }
+
+    @Test
+    public void testCheckNumberInColumn() {
+        // TODO write test
+    }
+
+    @Test
+    public void testCheckNumberInBlock() {
+        // TODO write test
+    }
+
+    @Test
+    public void testValidateRow() throws IllegalGridException {
         Integer[] tmpGrid = Arrays.copyOf(easy, easy.length);
         tmpGrid[0] = 4;
         ISudokuController controller = new TestSudokuController();
@@ -68,7 +93,7 @@ public class SolverTest {
     }
 
     @Test
-    public void testCheckColumn() throws IllegalGridException {
+    public void testValidateColumn() throws IllegalGridException {
         Integer[] tmpGrid = Arrays.copyOf(easy, easy.length);
         tmpGrid[0] = 2;
         ISudokuController controller = new TestSudokuController();
@@ -80,7 +105,7 @@ public class SolverTest {
     }
 
     @Test
-    public void testCheckBlock() throws IllegalGridException {
+    public void testValidateBlock() throws IllegalGridException {
         Integer[] tmpGrid = Arrays.copyOf(easy, easy.length);
         tmpGrid[0] = 8;
         ISudokuController controller = new TestSudokuController();

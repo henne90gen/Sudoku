@@ -21,7 +21,9 @@ public class SmartSolver extends Solver {
         notesListGrid = new ArrayList[81];
         for (int row = 0; row < 9; row++) {
             for (int col = 0; col < 9; col++) {
-                notesListGrid[row * 9 + col] = new ArrayList<>();
+                if (sudoku.isFieldEditable(row, col)) {
+                    notesListGrid[row * 9 + col] = new ArrayList<>();
+                }
             }
         }
     }
@@ -79,9 +81,9 @@ public class SmartSolver extends Solver {
         SudokuPosition position = new SudokuPosition(pos.getRow(), pos.getCol());
         if (getNotesList(position) != null) {
             for (int j = 0; j < getNotesList(position).size(); j++) {
-                if (checkNumberInColumn(position.getRow(), position.getCol(), getNotesList(position).get(j)) ||
-                        checkNumberInRow(position.getRow(), position.getCol(), getNotesList(position).get(j)) ||
-                        checkNumberInBlock(position.getRow(), position.getCol(), getNotesList(position).get(j))) {
+                if (checkNumberInColumn(position, getNotesList(position).get(j)) ||
+                        checkNumberInRow(position, getNotesList(position).get(j)) ||
+                        checkNumberInBlock(position, getNotesList(position).get(j))) {
                     setNumber(position, getNotesList(position).get(j));
                     logSetNumber(position, getNotesList(position).get(j));
                     return true;
@@ -91,59 +93,89 @@ public class SmartSolver extends Solver {
         return position.moveRight() && placeSingleNumber(position);
     }
 
-    private boolean checkNumberInRow(int row, int col, int number) {
-        // TODO refactor this
-        for (int i = 0; i < 9; i++) {
-            if (getNotesList(new SudokuPosition(row, i)) != null) {
-                for (int j = 0; j < getNotesList(new SudokuPosition(row, i)).size(); j++) {
-                    if (getNotesList(new SudokuPosition(row, i)).get(j) == number && col != i) {
-                        return false;
-                    }
-                }
-            }
-        }
-        return true;
-    }
-
-    private boolean checkNumberInColumn(int row, int col, int number) {
-        // TODO refactor this
-        for (int i = 0; i < 9; i++) {
-            if (getNotesList(new SudokuPosition(i, col)) != null) {
-                for (int j = 0; j < getNotesList(new SudokuPosition(i, col)).size(); j++) {
-                    if (getNotesList(new SudokuPosition(i, col)).get(j) == number && row != i) {
-                        return false;
-                    }
-                }
-            }
-        }
-        return true;
-    }
-
-    private boolean checkNumberInBlock(int row, int col, int number) {
-        // TODO refactor this
-        int realCol = col;
-        int realRow = row;
-        col = col / 3;
-        row = row / 3;
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
-                int currentRow = j + row * 3;
-                int currentCol = i + col * 3;
-                if (getNotesList(new SudokuPosition(currentRow, currentCol)) != null) {
-                    for (int k = 0; k < getNotesList(new SudokuPosition(currentRow, currentCol)).size(); k++) {
-                        if (getNotesList(new SudokuPosition(currentRow, currentCol)).get(k) == number) {
-                            if (realCol != currentCol && realRow != currentRow) {
-                                return false;
-                            }
+    /**
+     * Goes through the row of the cell and checks each cells notesList for the given number, if the number is not
+     * found, we can place it
+     * @param position Cell that is going to be checked against
+     * @param number Number that we try to place in the cell
+     * @return True if the number can be placed in the cell, false otherwise
+     */
+    public boolean checkNumberInRow(SudokuPosition position, int number) {
+        SudokuPosition currentPosition = new SudokuPosition(position.getRow(), 0);
+        while (currentPosition.getRow() == position.getRow()) {
+            if (currentPosition.getCol() != position.getCol()) {
+                if (getNotesList(currentPosition) != null) {
+                    for (int i = 0; i < getNotesList(currentPosition).size(); i++) {
+                        if (getNotesList(currentPosition).get(i) == number) {
+                            return false;
                         }
                     }
+                } else if (getNumber(currentPosition) == number) {
+                    return false;
                 }
             }
+            currentPosition.moveRight();
         }
         return true;
     }
 
-    private void scanPossibilities(SudokuPosition pos) {
+    /**
+     * Goes through the colunm of the cell and checks each cells notesList for the given number, if the number is not
+     * found, we can place it
+     * @param position Cell that is going to be checked against
+     * @param number Number that we try to place in the cell
+     * @return True if the number can be placed in the cell, false otherwise
+     */
+    public boolean checkNumberInColumn(SudokuPosition position, int number) {
+        SudokuPosition currentPosition = new SudokuPosition(0, position.getCol());
+        while (currentPosition.getCol() == position.getCol()) {
+            if (position.getRow() != currentPosition.getRow()) {
+                if (getNotesList(currentPosition) != null) {
+                    for (int i = 0; i < getNotesList(currentPosition).size(); i++) {
+                        if (getNotesList(currentPosition).get(i) == number) {
+                            return false;
+                        }
+                    }
+                } else if (getNumber(currentPosition) == number) {
+                    return false;
+                }
+            }
+            currentPosition.moveDown();
+        }
+        return true;
+    }
+
+    /**
+     * Goes through the block of the cell and checks each cells notesList for the given number, if the number is not
+     * found, we can place it
+     * @param position Cell that is going to be checked against
+     * @param number Number that we try to place in the cell
+     * @return True if the number can be placed in the cell, false otherwise
+     */
+    public boolean checkNumberInBlock(SudokuPosition position, int number) {
+        // Moving currentPosition to the top left corner of the block it belongs to
+        int topLeftRow = position.getRow() / 3 * 3;
+        int topLeftCol = position.getCol() / 3 * 3;
+        SudokuPosition currentPosition = new SudokuPosition(topLeftRow, topLeftCol);
+        while (!(currentPosition.getCol() >= topLeftCol + 3 && currentPosition.getRow() >= topLeftRow + 3)) {
+            if (currentPosition.getCol() >= topLeftCol + 3) {
+                for (int i = 0; i < 3; i++) currentPosition.moveLeft();
+                currentPosition.moveDown();
+            }
+            if (currentPosition.getRow() != position.getRow() && currentPosition.getCol() != position.getCol() &&
+                    getNotesList(currentPosition) != null) {
+                for (int i = 0; i < getNotesList(currentPosition).size(); i++) {
+                    if (getNotesList(currentPosition).get(i) == number) {
+                        return false;
+                    }
+                }
+            }
+            currentPosition.moveRight();
+        }
+        return true;
+    }
+
+    public void scanPossibilities(SudokuPosition pos) {
         SudokuPosition position = new SudokuPosition(pos.getRow(), pos.getCol());
         if (position.getCol() == 0 && position.getRow() == 0) {
             resetSolver();
