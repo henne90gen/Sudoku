@@ -66,6 +66,7 @@ public abstract class Solver {
 
     public void setNumber(SudokuPosition position, int num) {
         solution[position.getRow() * 9 + position.getCol()] = num;
+        logSetNumber(position, num);
     }
 
     private void postFinishMessage(float time) {

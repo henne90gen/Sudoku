@@ -16,6 +16,7 @@ public class SmartSolver extends Solver {
         resetSolver();
     }
 
+    @Override
     protected void resetSolver() {
         //noinspection unchecked
         notesListGrid = new ArrayList[81];
@@ -23,6 +24,8 @@ public class SmartSolver extends Solver {
             for (int col = 0; col < 9; col++) {
                 if (sudoku.isFieldEditable(row, col)) {
                     notesListGrid[row * 9 + col] = new ArrayList<>();
+                } else {
+                    notesListGrid[row * 9 + col] = null;
                 }
             }
         }
@@ -30,67 +33,32 @@ public class SmartSolver extends Solver {
 
     @Override
     protected void startSolving() {
+        SudokuPosition position = new SudokuPosition(0, 0);
+        scanGrid();
         do {
-            scanGrid();
-        } while (placeSingleNumber(new SudokuPosition(0, 0)));
-
-        nextPossibleCell(new SudokuPosition(0, 0));
+            List<Integer> notes = getNotesList(position);
+            if (notes != null) {
+                if (notes.size() == 1) {
+                    placeNumberAndResetPosition(position, notes.get(0));
+                    continue;
+                }
+                for (Integer currentNumber : notes) {
+                    if (checkNumberInColumn(position, currentNumber) || checkNumberInRow(position, currentNumber) ||
+                            checkNumberInBlock(position, currentNumber)) {
+                        placeNumberAndResetPosition(position, currentNumber);
+                        break;
+                    }
+                }
+            }
+        } while (position.moveRight());
     }
 
-    private boolean nextPossibleCell(SudokuPosition pos) {
-        SudokuPosition position = new SudokuPosition(pos.getRow(), pos.getCol());
+    private SudokuPosition placeNumberAndResetPosition(SudokuPosition position, Integer number) {
+        setNumber(position, number);
         scanGrid();
-        if (getNumber(position) == 0) {
-            if (getNotesList(position).size() == 0) {
-                scanGrid();
-                if (getNotesList(position).size() == 0) {
-                    return false;
-                }
-            }
-            if (nextPossibleNumber(position, 0)) {
-                if (!position.moveRight()) {
-                    return true;
-                }
-                if (!nextPossibleCell(position)) {
-                    position.moveLeft();
-                    return nextPossibleCell(position);
-                }
-                return false;
-            }
-            return false;
-        }
-        return !position.moveRight() || nextPossibleCell(position);
-    }
-
-    private boolean nextPossibleNumber(SudokuPosition pos, int index) {
-        SudokuPosition position = new SudokuPosition(pos.getRow(), pos.getCol());
-        scanGrid();
-        if (getNotesList(position) != null && getNotesList(position).size() > index) {
-            setNumber(position, getNotesList(position).get(index));
-            logSetNumber(position, getNotesList(position).get(index));
-            scanGrid();
-        } else {
-            setNumber(position, 0);
-            scanGrid();
-            return false;
-        }
-        return nextPossibleNumber(position, ++index);
-    }
-
-    private boolean placeSingleNumber(SudokuPosition pos) {
-        SudokuPosition position = new SudokuPosition(pos.getRow(), pos.getCol());
-        if (getNotesList(position) != null) {
-            for (int j = 0; j < getNotesList(position).size(); j++) {
-                if (checkNumberInColumn(position, getNotesList(position).get(j)) ||
-                        checkNumberInRow(position, getNotesList(position).get(j)) ||
-                        checkNumberInBlock(position, getNotesList(position).get(j))) {
-                    setNumber(position, getNotesList(position).get(j));
-                    logSetNumber(position, getNotesList(position).get(j));
-                    return true;
-                }
-            }
-        }
-        return position.moveRight() && placeSingleNumber(position);
+        position.setRow(0);
+        position.setCol(-1);
+        return position;
     }
 
     /**
@@ -102,7 +70,8 @@ public class SmartSolver extends Solver {
      * @return True if the number can be placed in the cell, false otherwise
      */
     public boolean checkNumberInRow(SudokuPosition position, int number) {
-        SudokuPosition currentPosition = new SudokuPosition(position.getRow(), 0);
+        SudokuPosition currentPosition = position.getCopy();
+        currentPosition.setCol(0);
         while (currentPosition.getRow() == position.getRow()) {
             if (currentPosition.getCol() != position.getCol()) {
                 if (checkIsNumberInCell(currentPosition, number)) return false;
@@ -121,7 +90,8 @@ public class SmartSolver extends Solver {
      * @return True if the number can be placed in the cell, false otherwise
      */
     public boolean checkNumberInColumn(SudokuPosition position, int number) {
-        SudokuPosition currentPosition = new SudokuPosition(0, position.getCol());
+        SudokuPosition currentPosition = position.getCopy();
+        currentPosition.setRow(0);
         while (currentPosition.getCol() == position.getCol()) {
             if (position.getRow() != currentPosition.getRow()) {
                 if (checkIsNumberInCell(currentPosition, number)) return false;
@@ -185,8 +155,8 @@ public class SmartSolver extends Solver {
     }
 
     public void scanCell(SudokuPosition pos) {
-        SudokuPosition position = new SudokuPosition(pos.getRow(), pos.getCol());
-        if (sudoku.isFieldEditable(position.getRow(), position.getCol())) {
+        SudokuPosition position = pos.getCopy();
+        if (getNumber(position) == 0) {
             List<Integer> notes = new ArrayList<>();
             for (int i = 1; i < 10; i++) {
                 setNumber(position, i);

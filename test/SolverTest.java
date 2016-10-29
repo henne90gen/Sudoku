@@ -1,4 +1,3 @@
-import org.junit.Ignore;
 import org.junit.Test;
 import sudoku.ISudokuController;
 import sudoku.exceptions.IllegalGridException;
@@ -48,9 +47,7 @@ public class SolverTest {
         testSolver(SolverType.BruteForceSolver);
     }
 
-    // FIXME repair the SmartSolver and enable this test to prove it
     @Test
-    @Ignore
     public void testSmart() throws IllegalGridException {
         testSolver(SolverType.SmartSolver);
     }

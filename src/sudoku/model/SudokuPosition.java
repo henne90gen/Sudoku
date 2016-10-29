@@ -14,6 +14,10 @@ public class SudokuPosition {
         this.col = col;
     }
 
+    public SudokuPosition getCopy() {
+        return new SudokuPosition(row, col);
+    }
+
     public int getRow() {
         return row;
     }
@@ -37,13 +41,13 @@ public class SudokuPosition {
     public boolean moveRight() {
         if (col < 8) {
             col++;
+            return true;
         } else if (row < 8) {
             col = 0;
             row++;
-        } else {
-            return false;
+            return true;
         }
-        return true;
+        return false;
     }
 
     /**

@@ -45,7 +45,6 @@ public class BruteForceSolver extends Solver {
         SudokuPosition position = new SudokuPosition(p.getRow(), p.getCol());
         if (getNumber(position) < 9) {
             int newNumber = getNumber(position) + 1;
-            logSetNumber(position, newNumber);
             setNumber(position, newNumber);
         } else {
             setNumber(position, 0);
