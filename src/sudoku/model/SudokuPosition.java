@@ -76,7 +76,14 @@ public class SudokuPosition {
      * @return True if the operation was successful, false in case the bottom right position is reached.
      */
     public boolean moveDown() {
-        // FIXME implement this
-        return false;
+        if (row < 8) {
+            row++;
+        } else if (col < 8) {
+            row = 0;
+            col++;
+        } else {
+            return false;
+        }
+        return true;
     }
 }

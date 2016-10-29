@@ -31,7 +31,7 @@ public class SmartSolver extends Solver {
     @Override
     protected void startSolving() {
         do {
-            scanPossibilities(new SudokuPosition(0, 0));
+            scanGrid();
         } while (placeSingleNumber(new SudokuPosition(0, 0)));
 
         nextPossibleCell(new SudokuPosition(0, 0));
@@ -39,10 +39,10 @@ public class SmartSolver extends Solver {
 
     private boolean nextPossibleCell(SudokuPosition pos) {
         SudokuPosition position = new SudokuPosition(pos.getRow(), pos.getCol());
-        scanPossibilities(new SudokuPosition(0, 0));
+        scanGrid();
         if (getNumber(position) == 0) {
             if (getNotesList(position).size() == 0) {
-                scanPossibilities(new SudokuPosition(0, 0));
+                scanGrid();
                 if (getNotesList(position).size() == 0) {
                     return false;
                 }
@@ -64,14 +64,14 @@ public class SmartSolver extends Solver {
 
     private boolean nextPossibleNumber(SudokuPosition pos, int index) {
         SudokuPosition position = new SudokuPosition(pos.getRow(), pos.getCol());
-        scanPossibilities(new SudokuPosition(0, 0));
+        scanGrid();
         if (getNotesList(position) != null && getNotesList(position).size() > index) {
             setNumber(position, getNotesList(position).get(index));
             logSetNumber(position, getNotesList(position).get(index));
-            scanPossibilities(new SudokuPosition(0, 0));
+            scanGrid();
         } else {
             setNumber(position, 0);
-            scanPossibilities(new SudokuPosition(0, 0));
+            scanGrid();
             return false;
         }
         return nextPossibleNumber(position, ++index);
@@ -96,23 +96,16 @@ public class SmartSolver extends Solver {
     /**
      * Goes through the row of the cell and checks each cells notesList for the given number, if the number is not
      * found, we can place it
+     *
      * @param position Cell that is going to be checked against
-     * @param number Number that we try to place in the cell
+     * @param number   Number that we try to place in the cell
      * @return True if the number can be placed in the cell, false otherwise
      */
     public boolean checkNumberInRow(SudokuPosition position, int number) {
         SudokuPosition currentPosition = new SudokuPosition(position.getRow(), 0);
         while (currentPosition.getRow() == position.getRow()) {
             if (currentPosition.getCol() != position.getCol()) {
-                if (getNotesList(currentPosition) != null) {
-                    for (int i = 0; i < getNotesList(currentPosition).size(); i++) {
-                        if (getNotesList(currentPosition).get(i) == number) {
-                            return false;
-                        }
-                    }
-                } else if (getNumber(currentPosition) == number) {
-                    return false;
-                }
+                if (checkIsNumberInCell(currentPosition, number)) return false;
             }
             currentPosition.moveRight();
         }
@@ -122,23 +115,16 @@ public class SmartSolver extends Solver {
     /**
      * Goes through the colunm of the cell and checks each cells notesList for the given number, if the number is not
      * found, we can place it
+     *
      * @param position Cell that is going to be checked against
-     * @param number Number that we try to place in the cell
+     * @param number   Number that we try to place in the cell
      * @return True if the number can be placed in the cell, false otherwise
      */
     public boolean checkNumberInColumn(SudokuPosition position, int number) {
         SudokuPosition currentPosition = new SudokuPosition(0, position.getCol());
         while (currentPosition.getCol() == position.getCol()) {
             if (position.getRow() != currentPosition.getRow()) {
-                if (getNotesList(currentPosition) != null) {
-                    for (int i = 0; i < getNotesList(currentPosition).size(); i++) {
-                        if (getNotesList(currentPosition).get(i) == number) {
-                            return false;
-                        }
-                    }
-                } else if (getNumber(currentPosition) == number) {
-                    return false;
-                }
+                if (checkIsNumberInCell(currentPosition, number)) return false;
             }
             currentPosition.moveDown();
         }
@@ -148,8 +134,9 @@ public class SmartSolver extends Solver {
     /**
      * Goes through the block of the cell and checks each cells notesList for the given number, if the number is not
      * found, we can place it
+     *
      * @param position Cell that is going to be checked against
-     * @param number Number that we try to place in the cell
+     * @param number   Number that we try to place in the cell
      * @return True if the number can be placed in the cell, false otherwise
      */
     public boolean checkNumberInBlock(SudokuPosition position, int number) {
@@ -157,59 +144,69 @@ public class SmartSolver extends Solver {
         int topLeftRow = position.getRow() / 3 * 3;
         int topLeftCol = position.getCol() / 3 * 3;
         SudokuPosition currentPosition = new SudokuPosition(topLeftRow, topLeftCol);
-        while (!(currentPosition.getCol() >= topLeftCol + 3 && currentPosition.getRow() >= topLeftRow + 3)) {
+        while (currentPosition.getRow() < topLeftRow + 3 && currentPosition.getCol() < topLeftCol + 3) {
+            if (!(currentPosition.getRow() == position.getRow() && currentPosition.getCol() == position.getCol())) {
+                if (checkIsNumberInCell(currentPosition, number)) return false;
+            }
+            currentPosition.moveRight();
             if (currentPosition.getCol() >= topLeftCol + 3) {
                 for (int i = 0; i < 3; i++) currentPosition.moveLeft();
                 currentPosition.moveDown();
             }
-            if (currentPosition.getRow() != position.getRow() && currentPosition.getCol() != position.getCol() &&
-                    getNotesList(currentPosition) != null) {
-                for (int i = 0; i < getNotesList(currentPosition).size(); i++) {
-                    if (getNotesList(currentPosition).get(i) == number) {
-                        return false;
-                    }
-                }
-            }
-            currentPosition.moveRight();
         }
         return true;
     }
 
-    public void scanPossibilities(SudokuPosition pos) {
-        SudokuPosition position = new SudokuPosition(pos.getRow(), pos.getCol());
-        if (position.getCol() == 0 && position.getRow() == 0) {
-            resetSolver();
+    /**
+     * Checks a cell for a number.
+     *
+     * @param currentPosition Cell position
+     * @param number          Number to check against
+     * @return True if the number is either directly in the cell or in the notes corresponding to the cell.
+     */
+    private boolean checkIsNumberInCell(SudokuPosition currentPosition, int number) {
+        if (getNotesList(currentPosition) != null) {
+            for (int i = 0; i < getNotesList(currentPosition).size(); i++) {
+                if (getNotesList(currentPosition).get(i) == number) {
+                    return true;
+                }
+            }
+        } else if (getNumber(currentPosition) == number) {
+            return true;
         }
-        if (getNumber(position) == 0) {
-            setNotesList(position, new ArrayList<>());
-            for (int k = 1; k < 10; k++) {
-                setNumber(position, k);
+        return false;
+    }
+
+    public void scanGrid() {
+        SudokuPosition position = new SudokuPosition(0, 0);
+        do {
+            scanCell(position);
+        } while (position.moveRight());
+    }
+
+    public void scanCell(SudokuPosition pos) {
+        SudokuPosition position = new SudokuPosition(pos.getRow(), pos.getCol());
+        if (sudoku.isFieldEditable(position.getRow(), position.getCol())) {
+            List<Integer> notes = new ArrayList<>();
+            for (int i = 1; i < 10; i++) {
+                setNumber(position, i);
                 if (validateRow(position.getRow()) && validateColumn(position.getCol()) && validateBlock(position
                         .getRow(), position.getCol())) {
-                    getNotesList(position).add(k);
+                    notes.add(i);
                 }
                 setNumber(position, 0);
             }
-            if (getNotesList(position).size() == 1) {
-                setNumber(position, getNotesList(position).get(0));
-                logSetNumber(position, getNotesList(position).get(0));
-                setNotesList(position, null);
-                scanPossibilities(new SudokuPosition(0, 0));
-            }
+            setNotesList(position, notes);
         } else {
             setNotesList(position, null);
         }
-        if (!position.moveRight()) {
-            return;
-        }
-        scanPossibilities(position);
     }
 
-    private List<Integer> getNotesList(SudokuPosition position) {
+    public List<Integer> getNotesList(SudokuPosition position) {
         return notesListGrid[position.getRow() * 9 + position.getCol()];
     }
 
-    private void setNotesList(SudokuPosition position, List<Integer> grid) {
+    public void setNotesList(SudokuPosition position, List<Integer> grid) {
         notesListGrid[position.getRow() * 9 + position.getCol()] = grid;
     }
 }
