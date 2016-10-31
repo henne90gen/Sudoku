@@ -82,7 +82,7 @@ public class SmartSolver extends Solver {
     }
 
     /**
-     * Goes through the colunm of the cell and checks each cells notesList for the given number, if the number is not
+     * Goes through the column of the cell and checks each cells notesList for the given number, if the number is not
      * found, we can place it
      *
      * @param position Cell that is going to be checked against
@@ -154,7 +154,7 @@ public class SmartSolver extends Solver {
         } while (position.moveRight());
     }
 
-    public void scanCell(SudokuPosition pos) {
+    private void scanCell(SudokuPosition pos) {
         SudokuPosition position = pos.getCopy();
         if (getNumber(position) == 0) {
             List<Integer> notes = new ArrayList<>();
@@ -176,7 +176,7 @@ public class SmartSolver extends Solver {
         return notesListGrid[position.getRow() * 9 + position.getCol()];
     }
 
-    public void setNotesList(SudokuPosition position, List<Integer> grid) {
+    private void setNotesList(SudokuPosition position, List<Integer> grid) {
         notesListGrid[position.getRow() * 9 + position.getCol()] = grid;
     }
 }

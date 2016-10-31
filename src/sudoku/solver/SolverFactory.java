@@ -13,10 +13,6 @@ public class SolverFactory {
 
     public static final SolverFactory INSTANCE = new SolverFactory();
 
-    private BruteForceSolver bruteForceSolver;
-
-    private SmartSolver smartSolver;
-
     private SolverFactory() {
     }
 
@@ -36,7 +32,7 @@ public class SolverFactory {
         return new BruteForceSolver(controller, sudoku);
     }
 
-    public SmartSolver getSmartSolver(ISudokuController controller, SudokuModel sudoku) {
+    private SmartSolver getSmartSolver(ISudokuController controller, SudokuModel sudoku) {
         return new SmartSolver(controller, sudoku);
     }
 }

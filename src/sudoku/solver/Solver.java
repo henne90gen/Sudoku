@@ -13,15 +13,15 @@ public abstract class Solver {
 
     final SudokuModel sudoku;
 
-    final SolverType solverType;
+    private final SolverType solverType;
 
     private final ISudokuController controller;
 
-    protected Integer[] solution;
+    private Integer[] solution;
 
     private Thread solveThread;
 
-    public Solver(ISudokuController controller, SudokuModel sudoku, SolverType solverType) {
+    Solver(ISudokuController controller, SudokuModel sudoku, SolverType solverType) {
         this.controller = controller;
         this.sudoku = sudoku;
         this.solverType = solverType;
@@ -77,7 +77,7 @@ public abstract class Solver {
         pushSudokuEvent(SudokuEventFactory.INSTANCE.getPostMessageEvent(sudoku, message));
     }
 
-    void logSetNumber(SudokuPosition position, int newNumber) {
+    private void logSetNumber(SudokuPosition position, int newNumber) {
         pushSudokuEvent(SudokuEventFactory.INSTANCE.getSetNumberEvent(sudoku, position, newNumber));
     }
 

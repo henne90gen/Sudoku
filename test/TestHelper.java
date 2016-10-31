@@ -5,9 +5,10 @@ import java.util.List;
 /**
  * Created by henne on 29.10.16.
  */
-public class TestHelper {
+class TestHelper {
 
-    public static List<Integer>[] getExpectedScanGrid() {
+    static List<Integer>[] getExpectedScanGrid() {
+        //noinspection unchecked
         List<Integer>[] result = new ArrayList[81];
         for (int i = 0; i < result.length; i++) {
             result[i] = null;

@@ -25,11 +25,6 @@ public class TestSudokuController implements ISudokuController {
     }
 
     @Override
-    public void openViews() {
-
-    }
-
-    @Override
     public void handleSudokuEvent(SudokuEvent event) {
 
     }

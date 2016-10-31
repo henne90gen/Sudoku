@@ -12,15 +12,15 @@ public abstract class SudokuEvent {
 
     private final SudokuModel sudoku;
 
-    protected String message;
+    String message;
 
-    protected SudokuPosition position;
+    SudokuPosition position;
 
-    protected int newNumber;
+    int newNumber;
 
-    protected float time;
+    float time;
 
-    protected SudokuEvent(SudokuEventType eventType, SudokuModel sudoku) {
+    SudokuEvent(SudokuEventType eventType, SudokuModel sudoku) {
         this.eventType = eventType;
         this.sudoku = sudoku;
     }

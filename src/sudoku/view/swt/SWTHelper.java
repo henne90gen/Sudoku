@@ -12,14 +12,14 @@ import sudoku.solver.SolverType;
 /**
  * Created by henne on 23.10.16.
  */
-public class SWTHelper {
+class SWTHelper {
 
     public static final SWTHelper INSTANCE = new SWTHelper();
 
     private SWTHelper() {
     }
 
-    public Composite getTabComposite(TabFolder tabFolder) {
+    Composite getTabComposite(TabFolder tabFolder) {
         Composite tabComposite = new Composite(tabFolder, SWT.BORDER);
         tabComposite.setLayout(new FormLayout());
         FormData compositeData = new FormData();
@@ -31,7 +31,7 @@ public class SWTHelper {
         return tabComposite;
     }
 
-    public Label getMessageLabel(Display display, Composite tabComposite) {
+    Label getMessageLabel(Display display, Composite tabComposite) {
         Label messageLabel = new Label(tabComposite, SWT.LEFT | SWT.WRAP);
         messageLabel.setForeground(new Color(display, 0, 0, 0));
         FormData messageData = new FormData();
@@ -41,7 +41,7 @@ public class SWTHelper {
         return messageLabel;
     }
 
-    public Combo getSolverSelector(Composite tabComposite, Label messageLabel, Listener listener) {
+    Combo getSolverSelector(Composite tabComposite, Label messageLabel, Listener listener) {
         Combo solverSelector = new Combo(tabComposite, SWT.DROP_DOWN | SWT.BORDER);
         solverSelector.addListener(SWT.Selection, listener);
         for (SolverType type : SolverType.values()) {
@@ -56,8 +56,8 @@ public class SWTHelper {
         return solverSelector;
     }
 
-    public Text getCell(SudokuModel sudokuModel, SolverType solverType, Display display, Composite tabComposite,
-                        Text[] grid, int row, int col) {
+    Text getCell(SudokuModel sudokuModel, SolverType solverType, Display display, Composite tabComposite,
+                 Text[] grid, int row, int col) {
         Text cell = new Text(tabComposite, SWT.CENTER);
         cell.setData(sudokuModel.isFieldEditable(row, col));
         cell.setEnabled(false);
@@ -80,10 +80,9 @@ public class SWTHelper {
         return cell;
     }
 
-    public Button createSolveButton(String sudokuName, Composite tabComposite, Text[] grid) {
+    Button createSolveButton(Composite tabComposite, Text[] grid) {
         Button solveBtn = new Button(tabComposite, SWT.PUSH);
         solveBtn.setText(SWTConstants.SOLVE_BUTTON_TEXT);
-        solveBtn.setData(sudokuName);
         FormData solveData = new FormData();
         solveData.left = new FormAttachment();
         solveData.right = new FormAttachment(grid[80], 0, SWT.RIGHT);
@@ -92,10 +91,9 @@ public class SWTHelper {
         return solveBtn;
     }
 
-    public Button createResetButton(String sudokuName, Composite tabComposite, Button solveBtn) {
+    Button createResetButton(Composite tabComposite, Button solveBtn) {
         Button resetBtn = new Button(tabComposite, SWT.PUSH);
         resetBtn.setText(SWTConstants.RESET_BUTTON_TEXT);
-        resetBtn.setData(sudokuName);
         resetBtn.setEnabled(false);
         FormData resetData = new FormData();
         resetData.left = new FormAttachment();
@@ -105,6 +103,6 @@ public class SWTHelper {
         return resetBtn;
     }
 
-    public void createAddSudokuTab() {
+    void createAddSudokuTab() {
     }
 }

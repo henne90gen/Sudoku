@@ -10,7 +10,7 @@ import static org.junit.Assert.assertEquals;
  */
 public class SudokuModelTest {
 
-    private static Integer[] grid = {0, 4, 3, 0, 0, 0, 6, 7, 0,
+    private static final Integer[] grid = {0, 4, 3, 0, 0, 0, 6, 7, 0,
             0, 0, 0, 2, 9, 3, 0, 0, 4,
             2, 8, 0, 0, 0, 0, 3, 1, 0,
             0, 0, 0, 6, 0, 0, 0, 0, 0,

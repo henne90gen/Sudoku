@@ -20,7 +20,7 @@ import static org.junit.Assert.assertNotNull;
  */
 public class SolverTest {
 
-    private Integer[] easy = {
+    private final Integer[] easy = {
             0, 4, 3, 0, 0, 0, 6, 7, 0,
             0, 0, 0, 2, 9, 3, 0, 0, 4,
             2, 8, 0, 0, 0, 0, 3, 1, 9,
@@ -31,7 +31,7 @@ public class SolverTest {
             3, 0, 9, 4, 5, 2, 0, 0, 0,
             0, 2, 7, 0, 0, 0, 9, 5, 0};
 
-    private Integer[] easySolution = {
+    private final Integer[] easySolution = {
             9, 4, 3, 1, 8, 5, 6, 7, 2,
             6, 7, 1, 2, 9, 3, 5, 8, 4,
             2, 8, 5, 7, 4, 6, 3, 1, 9,

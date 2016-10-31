@@ -29,9 +29,7 @@ public class SudokuModel {
 
         this.grid = new Integer[81];
 
-        for (int i = 0; i < 81; i++) {
-            this.grid[i] = grid[i];
-        }
+        System.arraycopy(grid, 0, this.grid, 0, 81);
 
         editableFields = new boolean[this.grid.length];
         for (int i = 0; i < grid.length; i++) {
@@ -55,14 +53,6 @@ public class SudokuModel {
             return solver.getNumber(new SudokuPosition(row, col));
         }
         return grid[row * 9 + col];
-    }
-
-    public void setNumber(SolverType solverType, int row, int col, int num) {
-        Solver solver = solvers.get(solverType);
-
-        if (solver != null && isFieldEditable(row, col)) {
-            solver.setNumber(new SudokuPosition(row, col), num);
-        }
     }
 
     public boolean solveUsingSolver(SolverType solverType) {
@@ -95,9 +85,5 @@ public class SudokuModel {
         if (solver != null) {
             solver.waitFor();
         }
-    }
-
-    public Solver getSolver(SolverType solverType) {
-        return solvers.get(solverType);
     }
 }
