@@ -13,6 +13,8 @@ class SWTConstants {
     public static final int DEFAULT_MARGIN = 10;
 
     public static final String SOLVE_BUTTON_TEXT = "Solve Sudoku";
+
     public static final String RESET_BUTTON_TEXT = "Reset Sudoku";
+
     public static final String SHELL_TITLE = "Sudoku SWTView";
 }

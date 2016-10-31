@@ -35,9 +35,9 @@ public class SWTView extends View {
 
     private final Map<String, Text[]> grids;
 
-    private Button solveBtn;
+    private final Map<String, Button> solveBtns;
 
-    private Button resetBtn;
+    private final Map<String, Button> resetBtns;
 
     private int highlightedRow;
 
@@ -51,6 +51,8 @@ public class SWTView extends View {
 
         messageLabels = new LinkedHashMap<>();
         grids = new LinkedHashMap<>();
+        solveBtns = new LinkedHashMap<>();
+        resetBtns = new LinkedHashMap<>();
 
         display = new Display();
         display.syncExec(() -> {
@@ -99,18 +101,18 @@ public class SWTView extends View {
                 TabItem tabItem = new TabItem(tabFolder, SWT.NULL);
                 tabItem.setText(sudokuName);
                 tabItem.setControl(tabComposite);
+                tabItem.addListener(SWT.Selection, new Listener() {
+                    @Override
+                    public void handleEvent(Event event) {
+                        resetGrid(sudokuName, getSelectedSolver());
+                    }
+                });
 
                 Label messageLabel = SWTHelper.INSTANCE.getMessageLabel(display, tabComposite);
                 messageLabels.put(sudokuName, messageLabel);
 
                 Listener solverSelectorListener = event -> {
                     SolverType solverType = getSelectedSolver();
-
-                    boolean custom = false;
-                    if (solverType == SolverType.CustomSolver) {
-                        custom = true;
-                    }
-                    setGridEnabled(sudokuName, custom);
                     controller.getSudoku(sudokuName).resetSolver(solverType);
                     resetGrid(sudokuName, solverType);
                     messageLabel.setText("");
@@ -137,28 +139,17 @@ public class SWTView extends View {
                 ((FormData) messageLabel.getLayoutData()).right = new FormAttachment(grid[8], 0, SWT.RIGHT);
 
                 // TODO maybe place buttons next to each other
-                solveBtn = SWTHelper.INSTANCE.createSolveButton(sudokuName, tabComposite, grid);
+                Button solveBtn = SWTHelper.INSTANCE.createSolveButton(sudokuName, tabComposite, grid);
 
-                resetBtn = SWTHelper.INSTANCE.createResetButton(sudokuName, tabComposite, solveBtn);
+                Button resetBtn = SWTHelper.INSTANCE.createResetButton(sudokuName, tabComposite, solveBtn);
 
                 addListeners(solveBtn, resetBtn);
+
+                solveBtns.put(sudokuName, solveBtn);
+                resetBtns.put(sudokuName, resetBtn);
             }
 
             SWTHelper.INSTANCE.createAddSudokuTab();
-        });
-    }
-
-    private void setGridEnabled(String sudokuName, boolean enabled) {
-        display.syncExec(() -> {
-            for (Text cell : grids.get(sudokuName)) {
-                if ((boolean) cell.getData() || !enabled) {
-                    cell.setEnabled(enabled);
-                } else {
-                    cell.setEnabled(false);
-                }
-            }
-            solveBtn.setEnabled(!enabled);
-            resetBtn.setEnabled(enabled);
         });
     }
 
@@ -185,8 +176,6 @@ public class SWTView extends View {
             public void widgetSelected(SelectionEvent e) {
                 controller.getSudoku((String) solveBtn.getData()).resetSolver(getSelectedSolver());
                 resetGrid((String) solveBtn.getData(), getSelectedSolver());
-                solveBtn.setEnabled(true);
-                resetBtn.setEnabled(false);
             }
 
             @Override
@@ -197,6 +186,9 @@ public class SWTView extends View {
     }
 
     private void resetGrid(String sudokuName, SolverType solverType) {
+        solveBtns.get(sudokuName).setEnabled(true);
+        resetBtns.get(sudokuName).setEnabled(false);
+
         SudokuModel sudoku = controller.getSudoku(sudokuName);
         Text[] grid = grids.get(sudokuName);
         for (int row = 0; row < 9; row++) {
@@ -219,7 +211,7 @@ public class SWTView extends View {
         display.syncExec(() -> {
             switch (event.getType()) {
                 case FinishedSolving:
-                    resetBtn.setEnabled(true);
+                    resetBtns.get(event.getSudoku().getName()).setEnabled(true);
                 case PostMessage:
                     messageLabels.get(event.getSudoku().getName()).setText(event.getMessage());
                     break;

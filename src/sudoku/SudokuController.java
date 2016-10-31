@@ -20,8 +20,10 @@ public class SudokuController implements ISudokuController {
         views = new ArrayList<>();
         sudokus = new LinkedHashMap<>();
 
-        SudokuModel sudoku = SudokuFactory.INSTANCE.getSudoku(this);
-        sudokus.put(sudoku.getName(), sudoku);
+        SudokuModel sudokuModel1 = SudokuFactory.INSTANCE.getSudoku(this);
+        sudokus.put(sudokuModel1.getName(), sudokuModel1);
+        SudokuModel sudokuModel2 = SudokuFactory.INSTANCE.getSudoku(this);
+        sudokus.put(sudokuModel2.getName(), sudokuModel2);
 
 //        new ConsoleView(this);
         new SWTView(this);

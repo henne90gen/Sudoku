@@ -5,6 +5,6 @@ package sudoku.solver;
  */
 
 public enum SolverType {
-    BruteForceSolver, SmartSolver, CustomSolver
+    BruteForceSolver, SmartSolver
 }
 
