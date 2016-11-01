@@ -20,6 +20,8 @@ public abstract class SudokuEvent {
 
     float time;
 
+    int operations;
+
     SudokuEvent(SudokuEventType eventType, SudokuModel sudoku) {
         this.eventType = eventType;
         this.sudoku = sudoku;
@@ -47,5 +49,9 @@ public abstract class SudokuEvent {
 
     public float getTime() {
         return time;
+    }
+
+    public int getOperations() {
+        return operations;
     }
 }

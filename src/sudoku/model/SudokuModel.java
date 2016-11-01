@@ -6,6 +6,7 @@ import sudoku.solver.Solver;
 import sudoku.solver.SolverFactory;
 import sudoku.solver.SolverType;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.Map;
 
@@ -85,5 +86,9 @@ public class SudokuModel {
         if (solver != null) {
             solver.waitFor();
         }
+    }
+
+    public void printToFile(File file) {
+        // TODO implement this
     }
 }

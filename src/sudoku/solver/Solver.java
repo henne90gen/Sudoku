@@ -21,12 +21,16 @@ public abstract class Solver {
 
     private Thread solveThread;
 
+    private int numberOfOperations;
+
     Solver(ISudokuController controller, SudokuModel sudoku, SolverType solverType) {
         this.controller = controller;
         this.sudoku = sudoku;
         this.solverType = solverType;
 
         solution = sudoku.getGridCopy();
+
+        numberOfOperations = 0;
     }
 
     /**
@@ -67,10 +71,11 @@ public abstract class Solver {
     public void setNumber(SudokuPosition position, int num) {
         solution[position.getRow() * 9 + position.getCol()] = num;
         logSetNumber(position, num);
+        numberOfOperations++;
     }
 
     private void postFinishMessage(float time) {
-        pushSudokuEvent(SudokuEventFactory.INSTANCE.getFinishEvent(sudoku, time));
+        pushSudokuEvent(SudokuEventFactory.INSTANCE.getFinishEvent(sudoku, time, numberOfOperations));
     }
 
     protected void postMessage(String message) {

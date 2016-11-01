@@ -31,14 +31,20 @@ class SWTHelper {
         return tabComposite;
     }
 
-    Label getMessageLabel(Display display, Composite tabComposite) {
-        Label messageLabel = new Label(tabComposite, SWT.LEFT | SWT.WRAP);
-        messageLabel.setForeground(new Color(display, 0, 0, 0));
-        FormData messageData = new FormData();
-        messageData.top = new FormAttachment();
-        messageData.left = new FormAttachment();
-        messageLabel.setLayoutData(messageData);
-        return messageLabel;
+    Label getLabel(Display display, Composite tabComposite, Control centerUnder, String text) {
+        Label label = new Label(tabComposite, SWT.LEFT | SWT.WRAP);
+        label.setForeground(new Color(display, 0, 0, 0));
+        label.setText(text);
+        FormData labelData = new FormData();
+        if (centerUnder == null) {
+            labelData.top = new FormAttachment();
+        } else {
+            labelData.top = new FormAttachment(centerUnder, SWTConstants.DEFAULT_MARGIN);
+            labelData.right = new FormAttachment(centerUnder, 0, SWT.RIGHT);
+        }
+        labelData.left = new FormAttachment();
+        label.setLayoutData(labelData);
+        return label;
     }
 
     Combo getSolverSelector(Composite tabComposite, Label messageLabel, Listener listener) {
@@ -80,27 +86,16 @@ class SWTHelper {
         return cell;
     }
 
-    Button createSolveButton(Composite tabComposite, Text[] grid) {
-        Button solveBtn = new Button(tabComposite, SWT.PUSH);
-        solveBtn.setText(SWTConstants.SOLVE_BUTTON_TEXT);
-        FormData solveData = new FormData();
-        solveData.left = new FormAttachment();
-        solveData.right = new FormAttachment(grid[80], 0, SWT.RIGHT);
-        solveData.top = new FormAttachment(grid[80], SWTConstants.DEFAULT_MARGIN);
-        solveBtn.setLayoutData(solveData);
-        return solveBtn;
-    }
-
-    Button createResetButton(Composite tabComposite, Button solveBtn) {
-        Button resetBtn = new Button(tabComposite, SWT.PUSH);
-        resetBtn.setText(SWTConstants.RESET_BUTTON_TEXT);
-        resetBtn.setEnabled(false);
-        FormData resetData = new FormData();
-        resetData.left = new FormAttachment();
-        resetData.top = new FormAttachment(solveBtn, SWTConstants.DEFAULT_MARGIN);
-        resetData.right = new FormAttachment(solveBtn, 0, SWT.RIGHT);
-        resetBtn.setLayoutData(resetData);
-        return resetBtn;
+    Button createButton(Composite tabComposite, Control centerUnder, String text, boolean enabled) {
+        Button button = new Button(tabComposite, SWT.PUSH);
+        button.setText(text);
+        button.setEnabled(enabled);
+        FormData buttonData = new FormData();
+        buttonData.left = new FormAttachment();
+        buttonData.top = new FormAttachment(centerUnder, SWTConstants.DEFAULT_MARGIN);
+        buttonData.right = new FormAttachment(centerUnder, 0, SWT.RIGHT);
+        button.setLayoutData(buttonData);
+        return button;
     }
 
     void createAddSudokuTab() {

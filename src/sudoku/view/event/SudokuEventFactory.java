@@ -18,7 +18,7 @@ public class SudokuEventFactory {
         return new SetNumberEvent(sudoku, position, newNumber);
     }
 
-    public SudokuEvent getFinishEvent(SudokuModel sudoku, float time) {
-        return new FinishedSolvingEvent(sudoku, time);
+    public SudokuEvent getFinishEvent(SudokuModel sudoku, float time, int numberOfOperations) {
+        return new FinishedSolvingEvent(sudoku, time, numberOfOperations);
     }
 }

@@ -7,9 +7,11 @@ import sudoku.model.SudokuModel;
  */
 class FinishedSolvingEvent extends SudokuEvent {
 
-    FinishedSolvingEvent(SudokuModel sudoku, float time) {
+    FinishedSolvingEvent(SudokuModel sudoku, float time, int operations) {
         super(SudokuEventType.FinishedSolving, sudoku);
-        this.message = "Solved " + sudoku.getName() + " in " + (time / 1000) + "s";
+        this.message = "Solved '" + sudoku.getName() + "' in " + time + "ms with " + operations + " " +
+                "operations";
         this.time = time;
+        this.operations = operations;
     }
 }

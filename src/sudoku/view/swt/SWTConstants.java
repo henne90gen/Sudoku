@@ -8,13 +8,19 @@ import org.eclipse.swt.SWT;
 class SWTConstants {
 
 
-    public static final int SHELL_OPTIONS = SWT.SHELL_TRIM;
+    static final int SHELL_OPTIONS = SWT.SHELL_TRIM;
 
-    public static final int DEFAULT_MARGIN = 10;
+    static final int DEFAULT_MARGIN = 10;
 
-    public static final String SOLVE_BUTTON_TEXT = "Solve Sudoku";
+    static final String SOLVE_BUTTON_TEXT = "Solve Sudoku";
 
-    public static final String RESET_BUTTON_TEXT = "Reset Sudoku";
+    static final String RESET_BUTTON_TEXT = "Reset Sudoku";
 
-    public static final String SHELL_TITLE = "Sudoku SWTView";
+    static final String SHELL_TITLE = "Sudoku SWTView";
+
+    static final String PRINT_BUTTON_TEXT = "Print Sudoku";
+
+    static final String TIME_LABEL_TEXT = "Time (in ms): ";
+
+    static final String OPERATIONS_LABEL_TEXT = "Operations: ";
 }
