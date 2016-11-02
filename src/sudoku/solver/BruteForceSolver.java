@@ -31,18 +31,11 @@ public class BruteForceSolver extends Solver {
             } else {
                 if (backtracking) {
                     position.moveBackward();
-                } else {
-                    if (!position.moveForward()) {
-                        break;
-                    }
+                } else if (!position.moveForward()) {
+                    break;
                 }
             }
         }
-    }
-
-    @Override
-    protected void resetSolver() {
-        // do nothing
     }
 
     private boolean nextNumber(SudokuPosition p) {
@@ -56,5 +49,10 @@ public class BruteForceSolver extends Solver {
         }
         return validateRow(position.getRow()) && validateColumn(position.getCol()) && validateBlock(position.getRow()
                 , position.getCol()) || nextNumber(position);
+    }
+
+    @Override
+    protected void resetSolver() {
+        // do nothing
     }
 }

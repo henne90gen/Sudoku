@@ -64,7 +64,6 @@ public class SolverTest {
     }
 
     @Test
-    @Ignore
     public void testScanGrid() {
         ISudokuController controller = new TestSudokuController();
         SudokuModel sudoku = SudokuFactory.INSTANCE.getSudoku(controller);
@@ -87,7 +86,6 @@ public class SolverTest {
     }
 
     @Test
-    @Ignore
     public void testCheckNumberInRow() {
         ISudokuController controller = new TestSudokuController();
         SudokuModel sudoku = SudokuFactory.INSTANCE.getSudoku(controller, easy);
@@ -101,7 +99,6 @@ public class SolverTest {
     }
 
     @Test
-    @Ignore
     public void testCheckNumberInColumn() {
         ISudokuController controller = new TestSudokuController();
         SudokuModel sudoku = SudokuFactory.INSTANCE.getSudoku(controller, easy);
@@ -115,7 +112,6 @@ public class SolverTest {
     }
 
     @Test
-    @Ignore
     public void testCheckNumberInBlock() {
         ISudokuController controller = new TestSudokuController();
         SudokuModel sudoku = SudokuFactory.INSTANCE.getSudoku(controller, easy);
