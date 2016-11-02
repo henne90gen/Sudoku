@@ -15,7 +15,29 @@ public class BruteForceSolver extends Solver {
 
     @Override
     public void startSolving() {
-        nextCell(new SudokuPosition(0, 0));
+        SudokuPosition position = new SudokuPosition(0, 0);
+        boolean backtracking = false;
+        while (true) {
+            if (sudoku.isFieldEditable(position.getRow(), position.getCol())) {
+                if (nextNumber(position)) {
+                    if (!position.moveForward()) {
+                        break;
+                    }
+                    backtracking = false;
+                } else {
+                    position.moveBackward();
+                    backtracking = true;
+                }
+            } else {
+                if (backtracking) {
+                    position.moveBackward();
+                } else {
+                    if (!position.moveForward()) {
+                        break;
+                    }
+                }
+            }
+        }
     }
 
     @Override
@@ -23,26 +45,8 @@ public class BruteForceSolver extends Solver {
         // do nothing
     }
 
-    private boolean nextCell(SudokuPosition p) {
-        SudokuPosition position = new SudokuPosition(p.getRow(), p.getCol());
-        if (sudoku.isFieldEditable(position.getRow(), position.getCol())) {
-            if (nextNumber(position)) {
-                if (!position.moveRight()) {
-                    return true;
-                }
-                if (!nextCell(position)) {
-                    position.moveLeft();
-                    return nextCell(position);
-                }
-                return true;
-            }
-            return false;
-        }
-        return !position.moveRight() || nextCell(position);
-    }
-
     private boolean nextNumber(SudokuPosition p) {
-        SudokuPosition position = new SudokuPosition(p.getRow(), p.getCol());
+        SudokuPosition position = p.getCopy();
         if (getNumber(position) < 9) {
             int newNumber = getNumber(position) + 1;
             setNumber(position, newNumber);

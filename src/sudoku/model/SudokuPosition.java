@@ -34,60 +34,78 @@ public class SudokuPosition {
         this.col = col;
     }
 
+    public boolean moveForward() {
+        if (!moveRight()) {
+            if (moveDown()) {
+                col = 0;
+            } else {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public boolean moveBackward() {
+        if (!moveLeft()) {
+            if (moveUp()) {
+                col = 8;
+            } else {
+                return false;
+            }
+        }
+        return true;
+    }
+
     /**
-     * Moves the position to the right, will move a row down if the end of the current row is reached.
-     * @return True if the operation was successful, false in case the right edge in the bottom row is reached.
+     * Moves the position to the right until the end of the row is reached
+     *
+     * @return True if the operation was successful, false in case the right edge is reached
      */
     public boolean moveRight() {
         if (col < 8) {
             col++;
             return true;
-        } else if (row < 8) {
-            col = 0;
-            row++;
+        }
+        return false;
+    }
+
+    /**
+     * Moves the position to the left until the left side of the row is reached
+     *
+     * @return True if the operation was successful, false in case the left edge is reached
+     */
+    public boolean moveLeft() {
+        if (col > 0) {
+            col--;
             return true;
         }
         return false;
     }
 
     /**
-     * Moves the position to the left, will move a row up if the beginning of the current row is reached.
-     * @return True if the operation was successful, false in case the left edge in the top row is reached.
-     */
-    public boolean moveLeft() {
-        if (col > 0) {
-            col--;
-        } else if (row > 0) {
-            col = 8;
-            row--;
-        } else {
-            return false;
-        }
-        return true;
-    }
-
-    /**
-     * Moves the position up, will move a column to the left if the top of the current column is reached.
-     * @return True if the operation was successful, false in case the top left position is is reached.
+     * Moves the position up until the top is reached
+     *
+     * @return True if the operation was successful, false in case the top is reached.
      */
     public boolean moveUp() {
         // FIXME implement this
+        if (row > 0) {
+            row--;
+            return true;
+        }
         return false;
     }
 
     /**
-     * Moves the position down, will move a column to the right if the end of the current column is reached.
-     * @return True if the operation was successful, false in case the bottom right position is reached.
+     * Moves the position down until the bottom is reached
+     *
+     * @return True if the operation was successful, false in case the bottom is reached.
      */
     public boolean moveDown() {
         if (row < 8) {
             row++;
-        } else if (col < 8) {
-            row = 0;
-            col++;
-        } else {
-            return false;
+            return true;
         }
-        return true;
+        return false;
     }
 }

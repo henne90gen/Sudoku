@@ -55,10 +55,68 @@ public class SmartSolver extends Solver {
 
     private SudokuPosition placeNumberAndResetPosition(SudokuPosition position, Integer number) {
         setNumber(position, number);
-        scanGrid();
+        // FIXME replace scanGrid with a more efficient algorithm
+//        scanGrid();
+        removeNumberFromNotes(position, number);
         position.setRow(0);
         position.setCol(-1);
         return position;
+    }
+
+    private void removeNumberFromCellsNotes(SudokuPosition position, Integer number) {
+        List<Integer> notes = getNotesList(position);
+        if (notes != null) {
+            for (int i = 0; i < notes.size(); i++) {
+                if (notes.get(i) == number) {
+                    notes.remove(i);
+                    if (notes.size() == 0) {
+                        setNotesList(position, null);
+                    }
+                    break;
+                }
+            }
+        }
+    }
+
+    // FIXME gets stuck in an infinite loop
+    private void removeNumberFromNotes(SudokuPosition position, Integer number) {
+        SudokuPosition currentPosition = position.getCopy();
+        // go through row
+        currentPosition.setCol(0);
+        while (currentPosition.getRow() == position.getRow()) {
+
+            removeNumberFromCellsNotes(currentPosition, number);
+
+            if (!currentPosition.moveRight()) {
+                break;
+            }
+        }
+
+        // go through column
+        currentPosition = position.getCopy();
+        currentPosition.setRow(0);
+        while (currentPosition.getCol() == position.getCol()) {
+            removeNumberFromCellsNotes(currentPosition, number);
+            if (!currentPosition.moveDown()) {
+                break;
+            }
+        }
+
+        // go through block
+        // Moving currentPosition to the top left corner of the block it belongs to
+        int topLeftRow = position.getRow() / 3 * 3;
+        int topLeftCol = position.getCol() / 3 * 3;
+        currentPosition = new SudokuPosition(topLeftRow, topLeftCol);
+        while (currentPosition.getRow() < topLeftRow + 3 && currentPosition.getCol() < topLeftCol + 3) {
+            removeNumberFromCellsNotes(currentPosition, number);
+            currentPosition.moveRight();
+            if (currentPosition.getCol() >= topLeftCol + 3) {
+                for (int i = 0; i < 3; i++) currentPosition.moveLeft();
+                if (currentPosition.moveDown()) {
+                    break;
+                }
+            }
+        }
     }
 
     /**
