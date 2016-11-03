@@ -49,7 +49,6 @@ public class SolverTest {
     }
 
     @Test
-    @Ignore
     public void testSmart() throws IllegalGridException {
         testSolver(SolverType.SmartSolver);
     }
@@ -68,7 +67,7 @@ public class SolverTest {
         ISudokuController controller = new TestSudokuController();
         SudokuModel sudoku = SudokuFactory.INSTANCE.getSudoku(controller);
         SmartSolver solver = new SmartSolver(controller, sudoku);
-        solver.scanGrid();
+        solver.fillNotesListGrid();
 
         List<Integer>[] expectedScanGrid = TestHelper.getExpectedScanGrid();
         for (int row = 0; row < 9; row++) {
@@ -91,7 +90,7 @@ public class SolverTest {
         SudokuModel sudoku = SudokuFactory.INSTANCE.getSudoku(controller, easy);
         SudokuPosition topLeft = new SudokuPosition(0, 0);
         SmartSolver solver = new SmartSolver(controller, sudoku);
-        solver.scanGrid();
+        solver.fillNotesListGrid();
 
         assertEquals(true, solver.checkNumberInRow(topLeft, 9));
         assertEquals(false, solver.checkNumberInRow(topLeft, 5));
@@ -104,7 +103,7 @@ public class SolverTest {
         SudokuModel sudoku = SudokuFactory.INSTANCE.getSudoku(controller, easy);
         SudokuPosition topLeft = new SudokuPosition(0, 0);
         SmartSolver solver = new SmartSolver(controller, sudoku);
-        solver.scanGrid();
+        solver.fillNotesListGrid();
 
         assertEquals(true, solver.checkNumberInColumn(topLeft, 9));
         assertEquals(false, solver.checkNumberInColumn(topLeft, 5));
@@ -117,7 +116,7 @@ public class SolverTest {
         SudokuModel sudoku = SudokuFactory.INSTANCE.getSudoku(controller, easy);
         SudokuPosition topLeft = new SudokuPosition(0, 0);
         SmartSolver solver = new SmartSolver(controller, sudoku);
-        solver.scanGrid();
+        solver.fillNotesListGrid();
 
         assertEquals(true, solver.checkNumberInBlock(topLeft, 9));
         assertEquals(false, solver.checkNumberInBlock(topLeft, 5));

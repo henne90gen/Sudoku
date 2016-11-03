@@ -18,14 +18,13 @@ public class SmartSolver extends Solver {
 
     @Override
     protected void startSolving() {
+        // initialize the solving process
         SudokuPosition position = new SudokuPosition(0, 0);
-        scanGrid();
-        int counter = 0;
+        fillNotesListGrid();
+
+        // main solver loop
         do {
             List<Integer> notes = getNotesList(position);
-            if (counter++ > 30) {
-                System.out.println();
-            }
             if (notes != null) {
                 if (notes.size() == 1) {
                     placeNumberAndResetPosition(position, notes.get(0));
@@ -42,64 +41,90 @@ public class SmartSolver extends Solver {
         } while (position.moveForward());
     }
 
+    /**
+     * Places a number in the specified cell, removes this number from the notes lists of all relevant cells and
+     * resets the position back to the start
+     *
+     * @param position Position of the cell
+     * @param number   Number that's going to be placed
+     */
     private void placeNumberAndResetPosition(SudokuPosition position, Integer number) {
         setNumber(position, number);
-        // FIXME replace scanGrid with a more efficient algorithm
-        scanGrid();
-//        removeNumberFromRowNotes(position, number);
-//        removeNumberFromColumnNotes(position, number);
-//        removeNumberFromBlockNotes(position, number);
+        setNotesList(position, null);
+
+        removeNumberFromRowNotes(position, number);
+        removeNumberFromColumnNotes(position, number);
+        removeNumberFromBlockNotes(position, number);
+
+        // set position back to the start of the sudoku
         position.setRow(0);
+        // compensating for moveForward at the end of do/while loop
         position.setCol(-1);
     }
 
-    // FIXME gets stuck in an infinite loop
+    /**
+     * Goes through each cell of the row and removes the number from the notes lists of those cells.
+     *
+     * @param position Position inside the row that's going to be checked
+     * @param number   Number which is going to be removed
+     */
     private void removeNumberFromRowNotes(SudokuPosition position, Integer number) {
         SudokuPosition currentPosition = position.getCopy();
-        // go through row
         currentPosition.setCol(0);
-        while (currentPosition.getRow() == position.getRow()) {
-
+        do {
             removeNumberFromCellsNotes(currentPosition, number);
-
-            if (!currentPosition.moveRight()) {
-                break;
-            }
-        }
+        } while (currentPosition.moveRight());
     }
 
+    /**
+     * Goes through each cell of the column and removes the number from the notes lists of those cells.
+     *
+     * @param position Position inside the column that's going to be checked
+     * @param number   Number which is going to be removed
+     */
     private void removeNumberFromColumnNotes(SudokuPosition position, Integer number) {
         SudokuPosition currentPosition = position.getCopy();
-        // go through column
-        currentPosition = position.getCopy();
         currentPosition.setRow(0);
-        while (currentPosition.getCol() == position.getCol()) {
+        do {
             removeNumberFromCellsNotes(currentPosition, number);
-            if (!currentPosition.moveDown()) {
-                break;
-            }
-        }
+        } while (!currentPosition.moveDown());
     }
 
+    /**
+     * Goes through each cell of the block and removes the number from the notes lists of those cells.
+     *
+     * @param position Position inside the block that's going to be checked
+     * @param number   Number which is going to be removed
+     */
     private void removeNumberFromBlockNotes(SudokuPosition position, Integer number) {
-        SudokuPosition currentPosition = position.getCopy();
-        // go through block
         // Moving currentPosition to the top left corner of the block it belongs to
         int topLeftRow = position.getRow() / 3 * 3;
         int topLeftCol = position.getCol() / 3 * 3;
-        currentPosition = new SudokuPosition(topLeftRow, topLeftCol);
-        while (currentPosition.getRow() < topLeftRow + 3 && currentPosition.getCol() < topLeftCol + 3) {
+        SudokuPosition currentPosition = new SudokuPosition(topLeftRow, topLeftCol);
+        while (currentPosition.getRow() < topLeftRow + 3) {
             removeNumberFromCellsNotes(currentPosition, number);
-            currentPosition.moveRight();
-            if (currentPosition.getCol() >= topLeftCol + 3) {
+
+            boolean wasAbleToMoveRight = currentPosition.moveRight();
+            if (!wasAbleToMoveRight) {
+                for (int i = 0; i < 2; i++) currentPosition.moveLeft();
+                if (!currentPosition.moveDown()) {
+                    break;
+                }
+            } else if (currentPosition.getCol() >= topLeftCol + 3) {
                 for (int i = 0; i < 3; i++) currentPosition.moveLeft();
-                if (currentPosition.moveDown()) {
+                if (!currentPosition.moveDown()) {
                     break;
                 }
             }
         }
     }
 
+    /**
+     * Removes the given number from the cells notes list
+     *
+     * @param position Position of the cell on which this operation is performed
+     * @param number   Number which is going to be removed
+     */
     private void removeNumberFromCellsNotes(SudokuPosition position, Integer number) {
         List<Integer> notes = getNotesList(position);
         if (notes != null) {
@@ -183,7 +208,7 @@ public class SmartSolver extends Solver {
     }
 
     /**
-     * Checks a cell for a number.
+     * Checks a cell for a number. Looks in the cell itself and in the cells notes list
      *
      * @param currentPosition Cell position
      * @param number          Number to check against
@@ -203,14 +228,23 @@ public class SmartSolver extends Solver {
         return false;
     }
 
-    public void scanGrid() {
+    /**
+     * Scans the whole grid and fills each cells notes list
+     */
+    public void fillNotesListGrid() {
         SudokuPosition position = new SudokuPosition(0, 0);
         do {
-            scanCell(position);
+            fillNotesList(position);
         } while (position.moveForward());
     }
 
-    private void scanCell(SudokuPosition pos) {
+    /**
+     * Fills a cells notes list by going through 1-9 and checking if those numbers are already in the row, column or
+     * block of the cell
+     *
+     * @param pos Position of the cell who's notes list is going to be filled
+     */
+    private void fillNotesList(SudokuPosition pos) {
         SudokuPosition position = pos.getCopy();
         if (getNumber(position) == 0) {
             List<Integer> notes = new ArrayList<>();
@@ -228,10 +262,6 @@ public class SmartSolver extends Solver {
         }
     }
 
-    public List<Integer> getNotesList(SudokuPosition position) {
-        return notesListGrid[position.getRow() * 9 + position.getCol()];
-    }
-
     @Override
     protected void resetSolver() {
         //noinspection unchecked
@@ -247,7 +277,20 @@ public class SmartSolver extends Solver {
         }
     }
 
-    private void setNotesList(SudokuPosition position, List<Integer> grid) {
-        notesListGrid[position.getRow() * 9 + position.getCol()] = grid;
+    /**
+     * @param position Position of the cell for which the notes are being requested
+     * @return List of numbers that can currently be placed in this cell
+     */
+    public List<Integer> getNotesList(SudokuPosition position) {
+        return notesListGrid[position.getRow() * 9 + position.getCol()];
+    }
+
+    /**
+     * Sets the notes list for a cell. Set to null if there is a number in the cell.
+     * @param position Position of the cell for which the notes are being set
+     * @param notesList List of numbers that can currently be placed in this cell
+     */
+    private void setNotesList(SudokuPosition position, List<Integer> notesList) {
+        notesListGrid[position.getRow() * 9 + position.getCol()] = notesList;
     }
 }
