@@ -56,7 +56,7 @@ public class SudokuModel {
         return grid[row * 9 + col];
     }
 
-    public boolean solveUsingSolver(SolverType solverType) {
+    public boolean startSolver(SolverType solverType) {
         Solver solver = solvers.get(solverType);
         if (solver != null) {
             solver.solve();
@@ -90,5 +90,20 @@ public class SudokuModel {
 
     public void printToFile(File file) {
         // TODO implement this
+    }
+
+    public boolean isSolverRunning(SolverType solverType) {
+        Solver solver = solvers.get(solverType);
+        if (solver != null) {
+            return solver.isSolving();
+        }
+        return false;
+    }
+
+    public void stopSolver(SolverType solverType) {
+        Solver solver = solvers.get(solverType);
+        if (solver != null) {
+            solver.stop();
+        }
     }
 }

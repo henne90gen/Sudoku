@@ -13,16 +13,50 @@ public class SmartSolver extends Solver {
 
     public SmartSolver(ISudokuController controller, SudokuModel sudoku) {
         super(controller, sudoku, SolverType.SmartSolver);
-        resetSolver();
     }
 
     @Override
-    protected void startSolving() {
-        // initialize the solving process
-        SudokuPosition position = new SudokuPosition(0, 0);
-        fillNotesListGrid();
+    protected void useSolver() {
+        // This only needs to be done once.
+        if (runCounter == 0) {
+            fillNotesListGrid();
+        }
 
-        // main solver loop
+        // FIXME this is only temporary to prevent SmartSolver to get stuck in an infinite loop
+        if (runCounter > 2) {
+            stop();
+        }
+
+        useDumbNotesListSolving();
+
+        useSmartNotesListSolving();
+    }
+
+    @Override
+    protected void resetSolver() {
+        //noinspection unchecked
+        notesListGrid = new ArrayList[81];
+        for (int row = 0; row < 9; row++) {
+            for (int col = 0; col < 9; col++) {
+                if (sudoku.isFieldEditable(row, col)) {
+                    notesListGrid[row * 9 + col] = new ArrayList<>();
+                } else {
+                    notesListGrid[row * 9 + col] = null;
+                }
+            }
+        }
+    }
+
+    private void useSmartNotesListSolving() {
+        // TODO implement something ;)
+    }
+
+    /**
+     * Creates the notes list grid and finds the easiest solution numbers. For example if there is only one number in
+     * a notes list or if there is only one of a certain number in a row, column or block.
+     */
+    private void useDumbNotesListSolving() {
+        SudokuPosition position = new SudokuPosition(0, 0);
         do {
             List<Integer> notes = getNotesList(position);
             if (notes != null) {
@@ -201,7 +235,9 @@ public class SmartSolver extends Solver {
             }
             if (currentPosition.getCol() >= topLeftCol + 3) {
                 for (int i = 0; i < 3; i++) currentPosition.moveLeft();
-                currentPosition.moveDown();
+                if (!currentPosition.moveDown()) {
+                    break;
+                }
             }
         }
         return true;
@@ -262,21 +298,6 @@ public class SmartSolver extends Solver {
         }
     }
 
-    @Override
-    protected void resetSolver() {
-        //noinspection unchecked
-        notesListGrid = new ArrayList[81];
-        for (int row = 0; row < 9; row++) {
-            for (int col = 0; col < 9; col++) {
-                if (sudoku.isFieldEditable(row, col)) {
-                    notesListGrid[row * 9 + col] = new ArrayList<>();
-                } else {
-                    notesListGrid[row * 9 + col] = null;
-                }
-            }
-        }
-    }
-
     /**
      * @param position Position of the cell for which the notes are being requested
      * @return List of numbers that can currently be placed in this cell
@@ -287,7 +308,8 @@ public class SmartSolver extends Solver {
 
     /**
      * Sets the notes list for a cell. Set to null if there is a number in the cell.
-     * @param position Position of the cell for which the notes are being set
+     *
+     * @param position  Position of the cell for which the notes are being set
      * @param notesList List of numbers that can currently be placed in this cell
      */
     private void setNotesList(SudokuPosition position, List<Integer> notesList) {

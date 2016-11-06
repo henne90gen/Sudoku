@@ -85,13 +85,50 @@ class SWTSudoku {
         addListeners(solveBtn, resetBtn, printBtn);
     }
 
+    void reset() {
+        sudoku.resetSolver(getSelectedSolver());
+
+        solveBtn.setText(SWTConstants.SOLVE_BUTTON_TEXT);
+        solveBtn.setEnabled(true);
+        resetBtn.setEnabled(false);
+
+        messageLabel.setText("");
+        timeLabel.setText(SWTConstants.TIME_LABEL_TEXT);
+        operationsLabel.setText(SWTConstants.OPERATIONS_LABEL_TEXT);
+
+        highlightedRow = 0;
+        highlightedCol = 0;
+
+        for (int row = 0; row < 9; row++) {
+            for (int col = 0; col < 9; col++) {
+                grid[row * 9 + col].setBackground(new Color(view.getDisplay(), 0, 0, 0));
+                int number = sudoku.getNumber(getSelectedSolver(), row, col);
+                if (number > 0) {
+                    grid[row * 9 + col].setText("" + number);
+                } else {
+                    grid[row * 9 + col].setText("");
+                }
+            }
+        }
+    }
+
+    private SolverType getSelectedSolver() {
+        return SolverType.valueOf(solverSelector.getText());
+    }
+
     private void addListeners(Button solveBtn, Button resetBtn, Button printBtn) {
         solveBtn.addSelectionListener(new SelectionListener() {
             @Override
             public void widgetSelected(SelectionEvent e) {
-                sudoku.solveUsingSolver(getSelectedSolver());
-                solveBtn.setEnabled(false);
-                solverSelector.setEnabled(false);
+                SolverType selectedSolver = getSelectedSolver();
+                if (sudoku.isSolverRunning(selectedSolver)) {
+                    sudoku.stopSolver(selectedSolver);
+                    reset();
+                } else {
+                    sudoku.startSolver(selectedSolver);
+                    solveBtn.setText(SWTConstants.STOP_BUTTON_TEXT);
+                }
+                solverSelector.setEnabled(!solverSelector.isEnabled());
             }
 
             @Override
@@ -131,71 +168,61 @@ class SWTSudoku {
         });
     }
 
-    void reset() {
-        sudoku.resetSolver(getSelectedSolver());
-
-        solveBtn.setEnabled(true);
-        resetBtn.setEnabled(false);
-
-        messageLabel.setText("");
-        timeLabel.setText(SWTConstants.TIME_LABEL_TEXT);
-        operationsLabel.setText(SWTConstants.OPERATIONS_LABEL_TEXT);
-
-        highlightedRow = 0;
-        highlightedCol = 0;
-
-        for (int row = 0; row < 9; row++) {
-            for (int col = 0; col < 9; col++) {
-                grid[row * 9 + col].setBackground(new Color(view.getDisplay(), 0, 0, 0));
-                int number = sudoku.getNumber(getSelectedSolver(), row, col);
-                if (number > 0) {
-                    grid[row * 9 + col].setText("" + number);
-                } else {
-                    grid[row * 9 + col].setText("");
-                }
-            }
-        }
-    }
-
-    private SolverType getSelectedSolver() {
-        return SolverType.valueOf(solverSelector.getText());
-    }
-
-    private void resetHighlightedCell() {
-        view.getDisplay().syncExec(() -> grid[highlightedRow * 9 + highlightedCol].setBackground(new Color(view
-                .getDisplay(), 0,
-                0, 0)));
-    }
-
     void handleSudokuEvent(SudokuEvent event) {
         view.getDisplay().syncExec(() -> {
             switch (event.getType()) {
                 case FinishedSolving:
-                    resetBtn.setEnabled(true);
-                    solverSelector.setEnabled(true);
-                    resetHighlightedCell();
-                    for (int row = 0; row < 9; row++) {
-                        for (int col = 0; col < 9; col++) {
-                            grid[row * 9 + col].setText("" + sudoku.getNumber(getSelectedSolver(), row, col));
-                        }
-                    }
-                    timeLabel.setText(SWTConstants.TIME_LABEL_TEXT + event.getTime());
-                    operationsLabel.setText(SWTConstants.OPERATIONS_LABEL_TEXT + event.getOperations());
+                    handleFinishedSolvingEvent(event);
+                    break;
                 case PostMessage:
-                    messageLabel.setText(event.getMessage());
+                    handlePostMessageEvent(event);
                     break;
                 case SetNumber:
-                    resetHighlightedCell();
-                    highlightedRow = event.getPosition().getRow();
-                    highlightedCol = event.getPosition().getCol();
-                    grid[highlightedRow * 9 + highlightedCol].setBackground(new Color(view.getDisplay(), 0, 255, 0));
-                    if (event.getNewNumber() != 0) {
-                        grid[highlightedRow * 9 + highlightedCol].setText("" + event.getNewNumber());
-                    } else {
-                        grid[highlightedRow * 9 + highlightedCol].setText("");
-                    }
+                    handleSetNumberEvent(event);
                     break;
             }
         });
+    }
+
+    private void handleFinishedSolvingEvent(SudokuEvent event) {
+        resetBtn.setEnabled(true);
+        solveBtn.setEnabled(false);
+        solveBtn.setText(SWTConstants.SOLVE_BUTTON_TEXT);
+        solverSelector.setEnabled(true);
+        resetHighlightedCell();
+        for (int row = 0; row < 9; row++) {
+            for (int col = 0; col < 9; col++) {
+                int currentNumber = sudoku.getNumber(getSelectedSolver(), row, col);
+//                if (currentNumber != 0) {
+                grid[row * 9 + col].setText("" + currentNumber);
+//                } else {
+//                    grid[row * 9 + col].setText("");
+//                }
+            }
+        }
+        timeLabel.setText(SWTConstants.TIME_LABEL_TEXT + event.getTime());
+        operationsLabel.setText(SWTConstants.OPERATIONS_LABEL_TEXT + event.getOperations());
+        handlePostMessageEvent(event);
+    }
+
+    private void handlePostMessageEvent(SudokuEvent event) {
+        messageLabel.setText(event.getMessage());
+    }
+
+    private void handleSetNumberEvent(SudokuEvent event) {
+        resetHighlightedCell();
+        highlightedRow = event.getPosition().getRow();
+        highlightedCol = event.getPosition().getCol();
+        grid[highlightedRow * 9 + highlightedCol].setBackground(new Color(view.getDisplay(), 0, 255, 0));
+        if (event.getNewNumber() != 0) {
+            grid[highlightedRow * 9 + highlightedCol].setText("" + event.getNewNumber());
+        } else {
+            grid[highlightedRow * 9 + highlightedCol].setText("");
+        }
+    }
+
+    private void resetHighlightedCell() {
+        view.getDisplay().syncExec(() -> grid[highlightedRow * 9 + highlightedCol].setBackground(new Color(view
+                .getDisplay(), 0, 0, 0)));
     }
 }

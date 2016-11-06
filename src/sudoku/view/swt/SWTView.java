@@ -52,9 +52,9 @@ public class SWTView extends View {
     @Override
     public void open() {
 
+        addSudokuTabs();
         addManagementTab();
 
-        addSudokuTabs();
 
         display.syncExec(() -> {
 
@@ -67,6 +67,27 @@ public class SWTView extends View {
                 }
             }
             display.dispose();
+        });
+    }
+
+    private void addSudokuTabs() {
+        display.syncExec(() -> {
+            Set<String> sudokuNames = controller.getSudokuNames();
+            for (String sudokuName : sudokuNames) {
+
+                Composite tabComposite = SWTHelper.INSTANCE.getTabComposite(tabFolder);
+
+                TabItem tabItem = new TabItem(tabFolder, SWT.NULL);
+                tabItem.setText(sudokuName);
+                tabItem.setControl(tabComposite);
+                tabItem.addListener(SWT.Selection, event -> resetGrid(sudokuName));
+
+                SudokuModel sudokuModel = controller.getSudoku(sudokuName);
+                SWTSudoku swtSudoku = new SWTSudoku(this, sudokuModel, tabComposite);
+                sudokus.put(sudokuName, swtSudoku);
+            }
+
+            SWTHelper.INSTANCE.createAddSudokuTab();
         });
     }
 
@@ -113,27 +134,6 @@ public class SWTView extends View {
                 }
             });
 
-        });
-    }
-
-    private void addSudokuTabs() {
-        display.syncExec(() -> {
-            Set<String> sudokuNames = controller.getSudokuNames();
-            for (String sudokuName : sudokuNames) {
-
-                Composite tabComposite = SWTHelper.INSTANCE.getTabComposite(tabFolder);
-
-                TabItem tabItem = new TabItem(tabFolder, SWT.NULL);
-                tabItem.setText(sudokuName);
-                tabItem.setControl(tabComposite);
-                tabItem.addListener(SWT.Selection, event -> resetGrid(sudokuName));
-
-                SudokuModel sudokuModel = controller.getSudoku(sudokuName);
-                SWTSudoku swtSudoku = new SWTSudoku(this, sudokuModel, tabComposite);
-                sudokus.put(sudokuName, swtSudoku);
-            }
-
-            SWTHelper.INSTANCE.createAddSudokuTab();
         });
     }
 

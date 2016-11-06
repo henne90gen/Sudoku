@@ -17,21 +17,35 @@ public abstract class Solver {
 
     private final ISudokuController controller;
 
+    protected boolean solving;
+
+    /**
+     * Keeps track of how many times the main solving loop has run
+     */
+    protected int runCounter = 0;
+
     private Integer[] solution;
 
     private Thread solveThread;
 
-    private int numberOfOperations;
+    private int operations;
 
     Solver(ISudokuController controller, SudokuModel sudoku, SolverType solverType) {
         this.controller = controller;
         this.sudoku = sudoku;
         this.solverType = solverType;
-
-        solution = sudoku.getGridCopy();
-
-        numberOfOperations = 0;
+        reset();
     }
+
+    public void reset() {
+        solution = sudoku.getGridCopy();
+        operations = 0;
+        solving = false;
+        runCounter = 0;
+        resetSolver();
+    }
+
+    protected abstract void resetSolver();
 
     /**
      * Starts the solving process.
@@ -43,12 +57,30 @@ public abstract class Solver {
     }
 
     private void run() {
+        solving = true;
         long startTime = System.nanoTime();
-        startSolving();
+
+        while (solving) {
+            useSolver();
+            runCounter++;
+        }
+
         long endTime = System.nanoTime();
         float solveTime = (endTime - startTime) / 1000000000.0f;
 
+
         postFinishMessage(solveTime);
+
+    }
+
+    protected abstract void useSolver();
+
+    private void postFinishMessage(float time) {
+        pushSudokuEvent(SudokuEventFactory.INSTANCE.getFinishEvent(sudoku, time, operations));
+    }
+
+    private void pushSudokuEvent(SudokuEvent event) {
+        controller.handleSudokuEvent(event);
     }
 
     /**
@@ -56,41 +88,40 @@ public abstract class Solver {
      */
     public void waitFor() {
         try {
-            solveThread.join();
+            if (solveThread.isAlive()) {
+                solveThread.join();
+            }
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
 
-    protected abstract void startSolving();
-
-    public int getNumber(SudokuPosition position) {
-        return solution[position.getRow() * 9 + position.getCol()];
+    /**
+     * Stops the solver if it is currently solving, does nothing otherwise
+     */
+    public void stop() {
+        solving = false;
     }
 
-    public void setNumber(SudokuPosition position, int num) {
+    void setNumber(SudokuPosition position, int num) {
         solution[position.getRow() * 9 + position.getCol()] = num;
         logSetNumber(position, num);
-        numberOfOperations++;
-    }
-
-    private void postFinishMessage(float time) {
-        pushSudokuEvent(SudokuEventFactory.INSTANCE.getFinishEvent(sudoku, time, numberOfOperations));
-    }
-
-    protected void postMessage(String message) {
-        pushSudokuEvent(SudokuEventFactory.INSTANCE.getPostMessageEvent(sudoku, message));
+        operations++;
     }
 
     private void logSetNumber(SudokuPosition position, int newNumber) {
         pushSudokuEvent(SudokuEventFactory.INSTANCE.getSetNumberEvent(sudoku, position, newNumber));
     }
 
-    private void pushSudokuEvent(SudokuEvent event) {
-        controller.handleSudokuEvent(event);
+    public boolean isSolving() {
+        return solving;
     }
 
-    public SolverType getSolverType() {
+    protected void postMessage(String message) {
+        pushSudokuEvent(SudokuEventFactory.INSTANCE.getPostMessageEvent(sudoku, message));
+    }
+
+    SolverType getSolverType() {
         return solverType;
     }
 
@@ -109,6 +140,10 @@ public abstract class Solver {
             }
         }
         return true;
+    }
+
+    public int getNumber(SudokuPosition position) {
+        return solution[position.getRow() * 9 + position.getCol()];
     }
 
     /**
@@ -162,11 +197,4 @@ public abstract class Solver {
     public Integer[] getSolution() {
         return solution;
     }
-
-    public void reset() {
-        solution = sudoku.getGridCopy();
-        resetSolver();
-    }
-
-    protected abstract void resetSolver();
 }

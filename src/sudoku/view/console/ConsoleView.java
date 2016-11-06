@@ -55,6 +55,38 @@ public class ConsoleView extends View {
         }).start();
     }
 
+    @Override
+    public void handleSudokuEvent(SudokuEvent event) {
+        switch (event.getType()) {
+            case PostMessage:
+            case FinishedSolving:
+                println(event.getSudoku().getName(), event.getMessage());
+                break;
+            case SetNumber:
+                break;
+        }
+    }
+
+    private void println(String sudokuName, String line) {
+        println(sudokuName + ": " + line);
+    }
+
+    private void println(String line) {
+        print(line, true);
+    }
+
+    private void print(String line, boolean addLineBreak) {
+        if (line == null || line.isEmpty()) {
+            System.out.println();
+        } else {
+            if (addLineBreak) {
+                System.out.println(line);
+            } else {
+                System.out.print(line);
+            }
+        }
+    }
+
     private boolean handleCommand(String command) {
         String[] arguments = command.split(" ");
         switch (arguments[0]) {
@@ -122,7 +154,7 @@ public class ConsoleView extends View {
 
         println(sudokuName, "Running " + solverType);
 
-        boolean success = sudoku.solveUsingSolver(solverType);
+        boolean success = sudoku.startSolver(solverType);
         if (!success) {
             println(sudokuName, "Solving failed");
         } else {
@@ -172,38 +204,6 @@ public class ConsoleView extends View {
                 print(grid[row * 9 + col] + " ", false);
             }
             println("");
-        }
-    }
-
-    private void print(String line, boolean addLineBreak) {
-        if (line == null || line.isEmpty()) {
-            System.out.println();
-        } else {
-            if (addLineBreak) {
-                System.out.println(line);
-            } else {
-                System.out.print(line);
-            }
-        }
-    }
-
-    private void println(String line) {
-        print(line, true);
-    }
-
-    private void println(String sudokuName, String line) {
-        println(sudokuName + ": " + line);
-    }
-
-    @Override
-    public void handleSudokuEvent(SudokuEvent event) {
-        switch (event.getType()) {
-            case PostMessage:
-            case FinishedSolving:
-                println(event.getSudoku().getName(), event.getMessage());
-                break;
-            case SetNumber:
-                break;
         }
     }
 }

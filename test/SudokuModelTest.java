@@ -24,7 +24,7 @@ public class SudokuModelTest {
     public void testConstructor() throws IllegalGridException {
         TestSudokuController controller = new TestSudokuController();
 
-        SudokuModel sudoku = SudokuFactory.INSTANCE.getSudoku(controller, grid);
+        SudokuModel sudoku = SudokuFactory.INSTANCE.getEasySudoku(controller, grid);
         for (int i = 0; i < grid.length; i++) {
             assertEquals(grid[i], sudoku.getGridCopy()[i]);
         }

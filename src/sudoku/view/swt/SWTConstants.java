@@ -23,4 +23,6 @@ class SWTConstants {
     static final String TIME_LABEL_TEXT = "Time (in ms): ";
 
     static final String OPERATIONS_LABEL_TEXT = "Operations: ";
+
+    static final String STOP_BUTTON_TEXT = "Stop Solving";
 }

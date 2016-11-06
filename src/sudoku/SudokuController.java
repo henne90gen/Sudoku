@@ -20,15 +20,21 @@ public class SudokuController implements ISudokuController {
         views = new ArrayList<>();
         sudokus = new LinkedHashMap<>();
 
-        SudokuModel sudokuModel1 = SudokuFactory.INSTANCE.getSudoku(this);
+        SudokuModel sudokuModel1 = SudokuFactory.INSTANCE.getEasySudoku(this);
         sudokus.put(sudokuModel1.getName(), sudokuModel1);
-        SudokuModel sudokuModel2 = SudokuFactory.INSTANCE.getSudoku(this);
+        SudokuModel sudokuModel2 = SudokuFactory.INSTANCE.getMediumSudoku(this);
         sudokus.put(sudokuModel2.getName(), sudokuModel2);
+        SudokuModel sudokuModel3 = SudokuFactory.INSTANCE.getHardSudoku(this);
+        sudokus.put(sudokuModel3.getName(), sudokuModel3);
 
 //        new ConsoleView(this);
         new SWTView(this);
 
         openViews();
+    }
+
+    public void openViews() {
+        views.forEach(View::open);
     }
 
     public static void main(String[] args) {
@@ -45,10 +51,6 @@ public class SudokuController implements ISudokuController {
 
     public void addView(View view) {
         views.add(view);
-    }
-
-    public void openViews() {
-        views.forEach(View::open);
     }
 
     public void handleSudokuEvent(SudokuEvent event) {
