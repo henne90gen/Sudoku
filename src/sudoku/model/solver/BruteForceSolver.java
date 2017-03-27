@@ -1,6 +1,6 @@
-package sudoku.solver;
+package sudoku.model.solver;
 
-import sudoku.ISudokuController;
+import sudoku.controller.ISudokuController;
 import sudoku.model.SudokuModel;
 import sudoku.model.SudokuPosition;
 

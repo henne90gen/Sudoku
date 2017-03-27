@@ -1,22 +1,27 @@
 package sudoku.view;
 
-import sudoku.ISudokuController;
-import sudoku.view.event.SudokuEvent;
+import sudoku.controller.ISudokuController;
 
-/**
- * Created by henne on 16.10.16.
- */
 public abstract class View {
 
-    protected final ISudokuController controller;
+	protected final ISudokuController controller;
 
-    protected View(ISudokuController controller) {
-        this.controller = controller;
-        this.controller.addView(this);
-    }
+	private boolean open;
 
-    public abstract void open();
+	protected View(ISudokuController controller) {
+		this.controller = controller;
+		this.controller.addView(this);
+		open = true;
+		open();
+	}
 
-    public abstract void handleSudokuEvent(SudokuEvent event);
+	public abstract void open();
 
+	public void close() {
+		open = false;
+	}
+
+	public boolean isOpen() {
+		return open;
+	}
 }

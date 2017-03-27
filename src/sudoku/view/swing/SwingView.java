@@ -1,8 +1,8 @@
 package sudoku.view.swing;
 
-import sudoku.SudokuController;
+import sudoku.controller.SudokuController;
+import sudoku.controller.event.SudokuEvent;
 import sudoku.view.View;
-import sudoku.view.event.SudokuEvent;
 
 import javax.swing.*;
 
@@ -31,11 +31,6 @@ public class SwingView extends View {
 
     @Override
     public void open() {
-
-    }
-
-    @Override
-    public void handleSudokuEvent(SudokuEvent event) {
 
     }
 }

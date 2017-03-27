@@ -1,4 +1,4 @@
-package sudoku.view.event;
+package sudoku.controller.event;
 
 import sudoku.model.SudokuModel;
 

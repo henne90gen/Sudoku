@@ -1,4 +1,4 @@
-package sudoku.view.event;
+package sudoku.controller.event;
 
 /**
  * Created by henne on 22.10.16.

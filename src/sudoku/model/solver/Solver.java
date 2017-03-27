@@ -1,10 +1,10 @@
-package sudoku.solver;
+package sudoku.model.solver;
 
-import sudoku.ISudokuController;
+import sudoku.controller.ISudokuController;
+import sudoku.controller.event.SudokuEvent;
+import sudoku.controller.event.SudokuEventFactory;
 import sudoku.model.SudokuModel;
 import sudoku.model.SudokuPosition;
-import sudoku.view.event.SudokuEvent;
-import sudoku.view.event.SudokuEventFactory;
 
 /**
  * Created by henne on 16.10.16.
@@ -80,7 +80,7 @@ public abstract class Solver {
     }
 
     private void pushSudokuEvent(SudokuEvent event) {
-        controller.handleSudokuEvent(event);
+        controller.addEvent(event);
     }
 
     /**

@@ -1,12 +1,13 @@
 import org.junit.Test;
-import sudoku.ISudokuController;
+
+import sudoku.controller.ISudokuController;
 import sudoku.model.SudokuFactory;
 import sudoku.model.SudokuModel;
 import sudoku.model.SudokuPosition;
-import sudoku.solver.SmartSolver;
-import sudoku.solver.Solver;
-import sudoku.solver.SolverFactory;
-import sudoku.solver.SolverType;
+import sudoku.model.solver.SmartSolver;
+import sudoku.model.solver.Solver;
+import sudoku.model.solver.SolverFactory;
+import sudoku.model.solver.SolverType;
 
 import java.util.Arrays;
 import java.util.List;
