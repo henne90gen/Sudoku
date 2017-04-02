@@ -2,7 +2,7 @@ package sudoku;
 
 import sudoku.controller.SudokuController;
 import sudoku.model.SudokuFactory;
-import sudoku.view.swt.SWTView;
+import sudoku.view.lwjgl.LWJGLView;
 
 public class Main {
 
@@ -12,6 +12,7 @@ public class Main {
 		SudokuFactory.INSTANCE.getMediumSudoku(controller);
 		SudokuFactory.INSTANCE.getHardSudoku(controller);
 		// new ConsoleView(controller);
-		new SWTView(controller);
+		// new SWTView(controller);
+		new LWJGLView(controller);
 	}
 }

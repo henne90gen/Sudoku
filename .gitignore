@@ -1,8 +1,8 @@
-/bin/
-/sudoku/
+bin/
+sudoku/
+out/
 .idea/
 .settings
 .project
 .classpath
-Sudoku.iml
-out/
+/target/

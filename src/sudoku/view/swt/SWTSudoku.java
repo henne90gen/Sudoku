@@ -170,7 +170,7 @@ class SWTSudoku {
     }
 
     void handleSudokuEvent(SudokuEvent event) {
-        Display.getCurrent().syncExec(() -> {
+    	SWTView.getDisplay().syncExec(() -> {
             switch (event.getType()) {
                 case FinishedSolving:
                     handleFinishedSolvingEvent(event);

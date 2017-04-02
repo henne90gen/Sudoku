@@ -36,12 +36,20 @@ public class SWTView extends View {
 		super(controller);
 	}
 
+	public static Display getDisplay() {
+		Display display = Display.getCurrent();
+		if (display == null) {
+			display = Display.getDefault();
+		}
+		return display;
+	}
+
 	@Override
 	public void open() {
 
 		sudokus = new LinkedHashMap<>();
 
-		Display.getCurrent().syncExec(() -> {
+		getDisplay().syncExec(() -> {
 			shell = new Shell(Display.getCurrent(), SWTConstants.SHELL_OPTIONS);
 			shell.setLayout(new FormLayout());
 			shell.setText(SWTConstants.SHELL_TITLE);
@@ -59,7 +67,7 @@ public class SWTView extends View {
 		addSudokuTabs();
 		addManagementTab();
 
-		Display.getCurrent().syncExec(() -> {
+		getDisplay().syncExec(() -> {
 
 			shell.pack();
 			shell.open();
@@ -69,13 +77,13 @@ public class SWTView extends View {
 					Display.getCurrent().sleep();
 				}
 			}
-			Display.getCurrent().dispose();
+			getDisplay().dispose();
 			close();
 		});
 	}
 
 	private void addSudokuTabs() {
-		Display.getCurrent().syncExec(() -> {
+		getDisplay().syncExec(() -> {
 			Set<String> sudokuNames = controller.getSudokuNames();
 			for (String sudokuName : sudokuNames) {
 
@@ -101,7 +109,7 @@ public class SWTView extends View {
 	}
 
 	private void addManagementTab() {
-		Display.getCurrent().syncExec(() -> {
+		getDisplay().syncExec(() -> {
 			Composite tabComposite = SWTHelper.INSTANCE.getTabComposite(tabFolder);
 
 			TabItem tabItem = new TabItem(tabFolder, SWT.NULL);

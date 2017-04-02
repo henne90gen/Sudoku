@@ -1,3 +1,8 @@
+import static org.junit.Assert.*;
+
+import java.util.Arrays;
+import java.util.List;
+
 import org.junit.Test;
 
 import sudoku.controller.ISudokuController;
@@ -8,12 +13,6 @@ import sudoku.model.solver.SmartSolver;
 import sudoku.model.solver.Solver;
 import sudoku.model.solver.SolverFactory;
 import sudoku.model.solver.SolverType;
-
-import java.util.Arrays;
-import java.util.List;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 
 /**
  * Created by henne on 16.10.16.
@@ -182,7 +181,8 @@ public class SolverTest {
         assertEquals(true, solver.validateBlock(3, 0));
     }
 
-    private void printGrid(Integer[] grid) {
+    @SuppressWarnings("unused")
+	private void printGrid(Integer[] grid) {
         for (int row = 0; row < 9; row++) {
             for (int col = 0; col < 9; col++) {
                 System.out.print(grid[row * 9 + col] + " ");
