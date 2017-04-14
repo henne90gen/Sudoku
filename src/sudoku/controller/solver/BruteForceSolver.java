@@ -18,6 +18,12 @@ public class BruteForceSolver extends Solver {
 
 	@Override
 	protected void useSolver(SudokuModel sudoku) {
+//		try {
+//			Thread.sleep(10);
+//		} catch (InterruptedException e) {
+//			e.printStackTrace();
+//		}
+
 		if (sudoku.isFieldEditable(position.getRow(), position.getCol())) {
 			if (nextNumber(sudoku, position)) {
 				if (!position.moveForward()) {
