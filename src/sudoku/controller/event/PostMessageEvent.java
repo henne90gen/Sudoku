@@ -1,15 +1,9 @@
 package sudoku.controller.event;
 
-import sudoku.model.SudokuModel;
+public class PostMessageEvent extends SudokuEvent {
 
-/**
- * Created by henne on 23.10.16.
- */
-class PostMessageEvent extends SudokuEvent {
-
-    PostMessageEvent(SudokuModel sudoku, String message) {
-        super(SudokuEventType.PostMessage, sudoku);
-        this.message = message;
-    }
-
+	public PostMessageEvent(String message) {
+		super(SudokuEventType.PostMessage);
+		this.message = message;
+	}
 }

@@ -1,23 +1,22 @@
 package sudoku.model;
 
-import sudoku.controller.ISudokuController;
-import sudoku.exceptions.IllegalGridException;
-import sudoku.model.solver.Solver;
-import sudoku.model.solver.SolverFactory;
-import sudoku.model.solver.SolverType;
-
 import java.io.File;
 import java.util.Arrays;
-import java.util.Map;
+
+import sudoku.controller.ISudokuController;
+import sudoku.controller.event.SetNumberEvent;
+import sudoku.controller.event.SudokuEvent;
+import sudoku.exceptions.IllegalGridException;
 
 public class SudokuModel {
 
 	private ISudokuController controller;
+
 	private final String name;
+
 	private Integer[] grid;
-	private Map<SolverType, Solver> solvers;
-	// private Map<SolverType, Integer[]> solutions;
-	private boolean[] editableFields;
+
+	private Boolean[] editableFields;
 
 	public SudokuModel(ISudokuController controller, String name, Integer[] grid) throws IllegalGridException {
 		this.controller = controller;
@@ -26,17 +25,12 @@ public class SudokuModel {
 			throw new IllegalGridException();
 		}
 		this.grid = new Integer[81];
-
 		System.arraycopy(grid, 0, this.grid, 0, 81);
 
-		editableFields = new boolean[this.grid.length];
-		for (int i = 0; i < grid.length; i++) {
+		editableFields = new Boolean[81];
+		for (int i = 0; i < 81; i++) {
 			editableFields[i] = grid[i] == 0;
 		}
-
-		solvers = SolverFactory.INSTANCE.getAllSolvers(controller, this);
-
-		this.controller.addModel(this);
 	}
 
 	public String getName() {
@@ -47,62 +41,33 @@ public class SudokuModel {
 		return Arrays.copyOf(grid, grid.length);
 	}
 
-	public int getNumber(SolverType solverType, int row, int col) {
-		Solver solver = solvers.get(solverType);
-		if (solver != null) {
-			return solver.getNumber(new SudokuPosition(row, col));
-		}
+	public int getNumber(int row, int col) {
 		return grid[row * 9 + col];
 	}
 
-	public boolean startSolver(SolverType solverType) {
-		Solver solver = solvers.get(solverType);
-		if (solver != null) {
-			solver.solve();
+	public boolean setNumber(int row, int col, int value) {
+		if (isFieldEditable(row, col)) {
+			grid[row * 9 + col] = value;
+			SudokuEvent event = new SetNumberEvent(new SudokuPosition(row, col), value);
+			controller.fireEvent(this, event);
 			return true;
 		}
 		return false;
-	}
-
-	public Integer[] getSolution(SolverType solverType) {
-		Solver solver = solvers.get(solverType);
-		return solver.getSolution();
 	}
 
 	public boolean isFieldEditable(int row, int col) {
 		return editableFields[row * 9 + col];
 	}
 
-	public void resetSolver(SolverType solverType) {
-		Solver solver = solvers.get(solverType);
-		if (solver != null) {
-			solver.reset();
-		}
-	}
-
-	public void waitForSolver(SolverType solverType) {
-		Solver solver = solvers.get(solverType);
-		if (solver != null) {
-			solver.waitFor();
-		}
-	}
-
 	public void printToFile(File file) {
 		// TODO implement this
 	}
 
-	public boolean isSolverRunning(SolverType solverType) {
-		Solver solver = solvers.get(solverType);
-		if (solver != null) {
-			return solver.isSolving();
-		}
-		return false;
-	}
-
-	public void stopSolver(SolverType solverType) {
-		Solver solver = solvers.get(solverType);
-		if (solver != null) {
-			solver.stop();
+	public void reset() {
+		for (int i = 0; i < 81; i++) {
+			if (editableFields[i]) {
+				grid[i] = 0;
+			}
 		}
 	}
 }

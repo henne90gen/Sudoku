@@ -2,8 +2,7 @@ package sudoku.controller.listener;
 
 import sudoku.controller.event.SudokuEvent;
 
-public interface ISudokuListener {
+public interface SudokuListener {
 
-	
-	public void handleEvent(SudokuEvent event);
+	void handleEvent(SudokuEvent event);
 }

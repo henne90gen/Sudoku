@@ -11,18 +11,9 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.FileDialog;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.TabFolder;
-import org.eclipse.swt.widgets.TabItem;
+import org.eclipse.swt.widgets.*;
 
 import sudoku.controller.ISudokuController;
-import sudoku.controller.event.SudokuEvent;
-import sudoku.controller.listener.ISudokuListener;
 import sudoku.model.SudokuModel;
 import sudoku.view.View;
 
@@ -36,7 +27,7 @@ public class SWTView extends View {
 		super(controller);
 	}
 
-	public static Display getDisplay() {
+	public Display getDisplay() {
 		Display display = Display.getCurrent();
 		if (display == null) {
 			display = Display.getDefault();
@@ -73,8 +64,10 @@ public class SWTView extends View {
 			shell.open();
 
 			while (!shell.isDisposed()) {
-				if (!Display.getCurrent().readAndDispatch()) {
-					Display.getCurrent().sleep();
+				if (!Display.getCurrent()
+						.readAndDispatch()) {
+					Display.getCurrent()
+							.sleep();
 				}
 			}
 			getDisplay().dispose();
@@ -95,15 +88,8 @@ public class SWTView extends View {
 
 				SudokuModel sudokuModel = controller.getSudoku(sudokuName);
 				SWTSudoku swtSudoku = new SWTSudoku(this, sudokuModel, tabComposite);
+				swtSudoku.registerListener(controller);
 				sudokus.put(sudokuName, swtSudoku);
-			}
-		});
-
-		controller.addListener(new ISudokuListener() {
-
-			@Override
-			public void handleEvent(SudokuEvent event) {
-				sudokus.get(event.getSudoku().getName()).handleSudokuEvent(event);
 			}
 		});
 	}

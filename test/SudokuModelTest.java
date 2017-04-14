@@ -1,6 +1,7 @@
 import org.junit.Test;
+
+import sudoku.controller.SudokuFactory;
 import sudoku.exceptions.IllegalGridException;
-import sudoku.model.SudokuFactory;
 import sudoku.model.SudokuModel;
 
 import static org.junit.Assert.assertEquals;

@@ -6,8 +6,9 @@ import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.*;
+
+import sudoku.controller.solver.SolverType;
 import sudoku.model.SudokuModel;
-import sudoku.model.solver.SolverType;
 
 class SWTHelper {
 
@@ -59,13 +60,13 @@ class SWTHelper {
 		return solverSelector;
 	}
 
-	Text getCell(SudokuModel sudokuModel, SolverType solverType, Display display, Composite tabComposite, Text[] grid,
+	Text getCell(SudokuModel sudokuModel, Display display, Composite tabComposite, Text[] grid,
 			int row, int col) {
 		Text cell = new Text(tabComposite, SWT.CENTER);
 		cell.setData(sudokuModel.isFieldEditable(row, col));
 		cell.setEnabled(false);
 		cell.setBackground(new Color(display, 0, 0, 0));
-		int number = sudokuModel.getNumber(solverType, row, col);
+		int number = sudokuModel.getNumber(row, col);
 		if (number > 0) {
 			cell.setText("" + number);
 		}

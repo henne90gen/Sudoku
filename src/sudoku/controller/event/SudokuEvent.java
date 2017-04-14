@@ -1,57 +1,53 @@
 package sudoku.controller.event;
 
-import sudoku.model.SudokuModel;
+import sudoku.controller.solver.SolverType;
 import sudoku.model.SudokuPosition;
 
-/**
- * Created by henne on 22.10.16.
- */
 public abstract class SudokuEvent {
 
-    private final SudokuEventType eventType;
+	private final SudokuEventType eventType;
 
-    private final SudokuModel sudoku;
+	protected String message;
 
-    String message;
+	protected SudokuPosition position;
 
-    SudokuPosition position;
+	protected int newNumber;
 
-    int newNumber;
+	protected float time;
 
-    float time;
+	protected int operations;
 
-    int operations;
+	protected SolverType solverType;
 
-    SudokuEvent(SudokuEventType eventType, SudokuModel sudoku) {
-        this.eventType = eventType;
-        this.sudoku = sudoku;
-    }
+	SudokuEvent(SudokuEventType eventType) {
+		this.eventType = eventType;
+	}
 
-    public SudokuEventType getType() {
-        return eventType;
-    }
+	public SudokuEventType getType() {
+		return eventType;
+	}
 
-    public String getMessage() {
-        return message;
-    }
+	public String getMessage() {
+		return message;
+	}
 
-    public SudokuModel getSudoku() {
-        return sudoku;
-    }
+	public SudokuPosition getPosition() {
+		return position;
+	}
 
-    public SudokuPosition getPosition() {
-        return position;
-    }
+	public int getNewNumber() {
+		return newNumber;
+	}
 
-    public int getNewNumber() {
-        return newNumber;
-    }
+	public float getTime() {
+		return time;
+	}
 
-    public float getTime() {
-        return time;
-    }
+	public int getOperations() {
+		return operations;
+	}
 
-    public int getOperations() {
-        return operations;
-    }
+	public SolverType getSolverType() {
+		return solverType;
+	}
 }

@@ -24,4 +24,8 @@ public abstract class View {
 	public boolean isOpen() {
 		return open;
 	}
+	
+	public ISudokuController getController() {
+		return controller;
+	}
 }

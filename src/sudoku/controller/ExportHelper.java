@@ -1,4 +1,4 @@
-package sudoku.model;
+package sudoku.controller;
 
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.PdfPCell;
@@ -8,9 +8,6 @@ import com.itextpdf.text.pdf.PdfWriter;
 import java.io.*;
 import java.util.ArrayList;
 
-/**
- * Created by henne on 31.10.16.
- */
 public class ExportHelper {
 
     public static ArrayList<int[][]> readFromFile(String name, boolean hasSolution) {

@@ -1,6 +1,6 @@
 import sudoku.controller.ISudokuController;
 import sudoku.controller.event.SudokuEvent;
-import sudoku.controller.listener.ISudokuListener;
+import sudoku.controller.listener.SudokuListener;
 import sudoku.model.SudokuModel;
 import sudoku.view.View;
 
@@ -23,7 +23,7 @@ public class TestSudokuController implements ISudokuController {
     }
 
     @Override
-    public void addEvent(SudokuEvent event) {
+    public void fireEvent(SudokuEvent event) {
 
     }
     
@@ -33,7 +33,19 @@ public class TestSudokuController implements ISudokuController {
     }
 
 	@Override
-	public void addListener(ISudokuListener listener) {
+	public void addListener(SudokuListener listener) {
+		
+	}
+
+	@Override
+	public void fireEvent(SudokuModel sudoku, SudokuEvent event) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void addListener(SudokuModel sudoku, SudokuListener listener) {
+		// TODO Auto-generated method stub
 		
 	}
 }

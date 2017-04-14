@@ -7,8 +7,8 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import sudoku.controller.ISudokuController;
+import sudoku.controller.solver.SolverType;
 import sudoku.model.SudokuModel;
-import sudoku.model.solver.SolverType;
 import sudoku.view.View;
 
 /**
@@ -30,6 +30,8 @@ public class ConsoleView extends View {
 	public void open() {
 		new Thread(() -> {
 			try {
+				// TODO register listeners for different events
+
 				br = new BufferedReader(new InputStreamReader(System.in));
 
 				while (isOpen()) {
@@ -99,12 +101,10 @@ public class ConsoleView extends View {
 			break;
 		case "prints":
 			try {
-				Integer sudokuNumber = Integer.parseInt(arguments[1]);
-				Integer solverNumber = Integer.parseInt(arguments[2]);
-				printSolution(sudokuNumber, solverNumber);
-			} catch (NumberFormatException e) {
-				println("Usage: " + PRINT_SOLUTION_HELP);
-			} catch (ArrayIndexOutOfBoundsException e) {
+//				Integer sudokuNumber = Integer.parseInt(arguments[1]);
+//				Integer solverNumber = Integer.parseInt(arguments[2]);
+//				printSolution(sudokuNumber, solverNumber);
+			} catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
 				println("Usage: " + PRINT_SOLUTION_HELP);
 			}
 			break;
@@ -143,18 +143,15 @@ public class ConsoleView extends View {
 
 		println(sudokuName, "Running " + solverType);
 
-		boolean success = sudoku.startSolver(solverType);
-		if (!success) {
-			println(sudokuName, "Solving failed");
-		} else {
-			printSolution(sudokuNumber, solverNumber);
-		}
+		controller.startSolver(sudoku, solverType);
 	}
 
 	private String getSudokuName(int sudokuNumber) {
 		Set<String> sudokuNames = controller.getSudokuNames();
 		final AtomicInteger indexHolder = new AtomicInteger();
-		return sudokuNames.stream().filter(name -> indexHolder.getAndIncrement() == sudokuNumber).findFirst()
+		return sudokuNames.stream()
+				.filter(name -> indexHolder.getAndIncrement() == sudokuNumber)
+				.findFirst()
 				.orElse(null);
 	}
 
@@ -184,15 +181,16 @@ public class ConsoleView extends View {
 		}
 	}
 
-	private void printSolution(int sudokuNumber, int solverNumber) {
-		String sudokuName = getSudokuName(sudokuNumber);
-		SudokuModel sudoku = controller.getSudoku(sudokuName);
-		Integer[] grid = sudoku.getSolution(SolverType.values()[solverNumber]);
-		for (int row = 0; row < 9; row++) {
-			for (int col = 0; col < 9; col++) {
-				print(grid[row * 9 + col] + " ", false);
-			}
-			println("");
-		}
-	}
+	// TODO use a different approach to printing a solution
+	// private void printSolution(int sudokuNumber, int solverNumber) {
+	// String sudokuName = getSudokuName(sudokuNumber);
+	// SudokuModel sudoku = controller.getSudoku(sudokuName);
+	// Integer[] grid = sudoku.getSolution(SolverType.values()[solverNumber]);
+	// for (int row = 0; row < 9; row++) {
+	// for (int col = 0; col < 9; col++) {
+	// print(grid[row * 9 + col] + " ", false);
+	// }
+	// println("");
+	// }
+	// }
 }

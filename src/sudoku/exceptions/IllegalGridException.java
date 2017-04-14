@@ -1,7 +1,6 @@
 package sudoku.exceptions;
 
-/**
- * Created by henne on 16.10.16.
- */
 public class IllegalGridException extends RuntimeException {
+
+	private static final long serialVersionUID = -1711862633206322695L;
 }

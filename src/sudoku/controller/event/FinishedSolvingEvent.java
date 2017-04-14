@@ -1,17 +1,13 @@
 package sudoku.controller.event;
 
-import sudoku.model.SudokuModel;
+import sudoku.controller.solver.SolverType;
 
-/**
- * Created by henne on 23.10.16.
- */
-class FinishedSolvingEvent extends SudokuEvent {
+public class FinishedSolvingEvent extends SudokuEvent {
 
-    FinishedSolvingEvent(SudokuModel sudoku, float time, int operations) {
-        super(SudokuEventType.FinishedSolving, sudoku);
-        this.message = "Solved '" + sudoku.getName() + "' in " + time + "ms with " + operations + " " +
-                "operations";
-        this.time = time;
-        this.operations = operations;
-    }
+	public FinishedSolvingEvent(SolverType solverType, float time, int operations) {
+		super(SudokuEventType.FinishedSolving);
+		this.time = time;
+		this.operations = operations;
+		this.solverType = solverType;
+	}
 }

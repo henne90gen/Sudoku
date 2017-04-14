@@ -1,7 +1,6 @@
-package sudoku.model;
+package sudoku.controller;
 
-import sudoku.controller.ISudokuController;
-import sudoku.controller.SudokuController;
+import sudoku.model.SudokuModel;
 
 /**
  * Created by henne on 22.10.16.
