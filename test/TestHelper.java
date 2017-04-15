@@ -70,7 +70,7 @@ class TestHelper {
 	}
 
 	List<Integer>[] getExpectedScanGrid() {
-		// noinspection unchecked
+		@SuppressWarnings("unchecked")
 		List<Integer>[] result = new ArrayList[81];
 		for (int i = 0; i < result.length; i++) {
 			result[i] = null;

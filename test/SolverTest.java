@@ -15,9 +15,6 @@ import sudoku.controller.solver.SolverType;
 import sudoku.model.SudokuModel;
 import sudoku.model.SudokuPosition;
 
-/**
- * Created by henne on 16.10.16.
- */
 public class SolverTest {
 
 	@Test
@@ -30,9 +27,10 @@ public class SolverTest {
 	private void testSolver(SolverType solverType, Integer[] grid, Integer[] expectedSolution) {
 		SudokuController controller = new SudokuController();
 		SudokuModel sudoku = SudokuFactory.INSTANCE.getEasySudoku(controller, grid);
-
+		controller.addModel(sudoku);
+		
 		controller.startSolver(sudoku, solverType);
-		controller.waitForSolver(solverType);
+		controller.waitForSolver(sudoku, solverType);
 
 		final Integer[] solution = sudoku.getGridCopy();
 		assertSudokuSolution(expectedSolution, solution);
@@ -75,6 +73,7 @@ public class SolverTest {
 		testSolver(SolverType.SmartSolver, grid, solution);
 	}
 
+	@SuppressWarnings("unused")
 	@Test
 	public void testSmartWithHard() {
 		Integer[] grid = TestHelper.INSTANCE.getHard();

@@ -54,6 +54,7 @@ public class SudokuController implements ISudokuController {
 	public void addModel(SudokuModel sudoku) {
 		models.put(sudoku.getName(), sudoku);
 		solvers.put(sudoku.getName(), SolverFactory.getAllSolvers(this));
+		channelListeners.put(sudoku.getName(), new ArrayList<>());
 	}
 
 	@Override
