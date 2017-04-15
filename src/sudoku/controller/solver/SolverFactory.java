@@ -11,7 +11,7 @@ public class SolverFactory {
 	private SolverFactory() {
 	}
 
-	public static Map<SolverType, Solver> getAllSolvers(ISudokuController controller, SudokuModel sudoku) {
+	public static Map<SolverType, Solver> getAllSolvers(ISudokuController controller) {
 		Map<SolverType, Solver> solvers = new LinkedHashMap<>();
 
 		Solver solver = getBruteSolver(controller);

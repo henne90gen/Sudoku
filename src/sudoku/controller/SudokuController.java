@@ -15,7 +15,7 @@ public class SudokuController implements ISudokuController {
 
 	private final List<View> views;
 	private final Map<String, SudokuModel> models;
-	private final Map<SolverType, Solver> solvers;
+	private final Map<String, Map<SolverType, Solver>> solvers;
 	private final Map<String, List<SudokuListener>> channelListeners;
 	private final List<SudokuListener> listeners;
 
@@ -53,6 +53,7 @@ public class SudokuController implements ISudokuController {
 	@Override
 	public void addModel(SudokuModel sudoku) {
 		models.put(sudoku.getName(), sudoku);
+		solvers.put(sudoku.getName(), SolverFactory.getAllSolvers(this));
 	}
 
 	@Override
@@ -63,10 +64,6 @@ public class SudokuController implements ISudokuController {
 	@Override
 	public void fireEvent(SudokuEvent event) {
 		Objects.requireNonNull(event);
-		if (event.getType() == SudokuEventType.FinishedSolving) {
-			solvers.put(event.getSolverType(), SolverFactory.getSolver(this, event.getSolverType()));
-		}
-		
 		listeners.stream()
 				.forEach(l -> l.handleEvent(event));
 	}
@@ -75,6 +72,12 @@ public class SudokuController implements ISudokuController {
 	public void fireEvent(SudokuModel sudoku, SudokuEvent event) {
 		Objects.requireNonNull(event);
 		Objects.requireNonNull(sudoku);
+
+		if (event.getType() == SudokuEventType.FinishedSolving) {
+			solvers.get(sudoku.getName())
+					.put(event.getSolverType(), SolverFactory.getSolver(this, event.getSolverType()));
+		}
+
 		List<SudokuListener> channelList = channelListeners.get(sudoku.getName());
 
 		channelList.stream()
@@ -103,32 +106,39 @@ public class SudokuController implements ISudokuController {
 
 	@Override
 	public void startSolver(SudokuModel sudoku, SolverType solverType) {
-		Solver solver = solvers.get(solverType);
+		Solver solver = solvers.get(sudoku.getName())
+				.get(solverType);
 		if (solver == null) {
 			solver = SolverFactory.getSolver(this, solverType);
-			solvers.put(solverType, solver);
+			solvers.get(sudoku.getName())
+					.put(solverType, solver);
 		}
 		solver.solve(sudoku);
 	}
 
-	public void waitForSolver(SolverType solverType) {
-		Solver solver = solvers.get(solverType);
+	public void waitForSolver(SudokuModel sudoku, SolverType solverType) {
+		Solver solver = solvers.get(sudoku.getName())
+				.get(solverType);
 		if (solver != null) {
 			solver.waitFor();
-			solvers.put(solverType, null);
+			solvers.get(sudoku.getName())
+					.put(solverType, null);
 		}
 	}
 
-	public boolean isSolverRunning(SolverType solverType) {
-		Solver solver = solvers.get(solverType);
+	@Override
+	public boolean isSolverRunning(SudokuModel sudoku, SolverType solverType) {
+		Solver solver = solvers.get(sudoku.getName())
+				.get(solverType);
 		if (solver != null) {
 			return solver.isSolving();
 		}
 		return false;
 	}
 
-	public void stopSolver(SolverType solverType) {
-		Solver solver = solvers.get(solverType);
+	public void stopSolver(SudokuModel sudoku, SolverType solverType) {
+		Solver solver = solvers.get(sudoku.getName())
+				.get(solverType);
 		if (solver != null) {
 			solver.stop();
 		}

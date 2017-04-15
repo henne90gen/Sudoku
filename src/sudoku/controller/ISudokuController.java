@@ -28,4 +28,9 @@ public interface ISudokuController {
 
 	default void startSolver(SudokuModel sudoku, SolverType solverType) {
 	}
+
+	default void stopSolver(SolverType solverType) {
+	}
+	
+	boolean isSolverRunning(SudokuModel sudoku, SolverType bruteforcesolver);
 }
